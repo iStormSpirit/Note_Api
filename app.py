@@ -22,7 +22,7 @@ api.add_resource(NotesListResource,
                  '/notes',  # GET, POST
                  )
 api.add_resource(NoteResource,
-                 '/notes/<int:note_id>',  # GET, PUT, DELETE
+                 '/notes/<int:note_id>',  # GET, PUT, DELETE #
                  )
 
 if __name__ == '__main__':
