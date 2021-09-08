@@ -14,6 +14,7 @@ class UserSchema(ma.SQLAlchemySchema):
 
     id = ma.auto_field()
     username = ma.auto_field()
+    is_staff = ma.auto_field()
 
 
 user_schema = UserSchema()

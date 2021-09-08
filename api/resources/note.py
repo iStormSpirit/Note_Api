@@ -50,7 +50,7 @@ class NotesListResource(Resource):
         author = g.user
         parser = reqparse.RequestParser()
         parser.add_argument("text", required=True)
-        parser.add_argument("private")
+        parser.add_argument("private", type=bool)
         note_data = parser.parse_args()
         note = NoteModel(author_id=author.id, **note_data)
         note.save()

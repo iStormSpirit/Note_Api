@@ -139,6 +139,7 @@ class TestNotes(TestCase):
     def test_create_node(self):
         note_data = {
             "text": 'Test note 1',
+            "private": False
         }
         res = self.client.post('/notes',
                                headers=self.headers,
@@ -146,7 +147,7 @@ class TestNotes(TestCase):
                                content_type='application/json')
         data = json.loads(res.data)
         self.assertEqual(data["text"], note_data["text"])
-        self.assertTrue(data["private"])
+        self.assertFalse(data["private"])
 
     def test_get_notes(self):
         notes_data = [

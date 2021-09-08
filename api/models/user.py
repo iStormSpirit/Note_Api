@@ -10,6 +10,8 @@ class UserModel(db.Model):
     username = db.Column(db.String(32), unique=True)
     password_hash = db.Column(db.String(128))
     notes = db.relationship('NoteModel', backref='author', lazy='dynamic')
+    is_staff = db.Column(db.Boolean(), default=False,
+                         server_default="true", nullable=False)
 
     def __init__(self, username, password):
         self.username = username
