@@ -33,11 +33,11 @@ class NoteResource(Resource):
 
     def delete(self, note_id):
         note = NoteModel.query.get(note_id)
-        if note is None:
-            return f"Note with id {note} not found", 404
-        db.session.delete(note)
-        db.session.commit()
-        return note_schema.dump(note), 200
+        if not note:
+            abort(404, error=f"Note with id:{note_id} not found")
+        note_dict = note_schema.dump(note)
+        note.delete()
+        return note_dict, 200
 
 
 class NotesListResource(Resource):
