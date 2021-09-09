@@ -16,21 +16,11 @@ class UserResource(Resource):
         parser.add_argument("username", required=True)
         user_data = parser.parse_args()
         user = UserModel.query.get(user_id)
+        if not user:
+            abort(404, error=f"User with id={user_id} not found")
         user.username = user_data["username"]
         user.save()
         return user_schema.dump(user), 200
-    # def put(self, user_id):
-    #     parser = reqparse.RequestParser()
-    #     parser.add_argument("username", required=True)
-    #     # parser.add_argument("password", required=True)
-    #     user_data = parser.parse_args()
-    #     user = UserModel.query.get(user_id)
-    #     if user:
-    #         user.username = user_data["username"] or user.username
-    #         # user.password = user_data["username"] or user.password
-    #         user.save()
-    #         return user_schema.dump(user), 200
-    #     return "Not found", 404
 
     @auth.login_required(role="admin")
     def delete(self, user_id):
