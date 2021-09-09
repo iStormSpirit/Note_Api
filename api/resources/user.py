@@ -31,18 +31,22 @@ class UserResource(MethodResource):
 
     @auth.login_required(role="admin")
     @doc(description='Delete user by id.')
+    @marshal_with(UserSchema)
     def delete(self, user_id):
         user = UserModel.query.get(user_id)
         if user:
             user.remove()
-            return user_schema.dump(user), 200
+            return user, 200
         return "Not found", 404
+
 
 @doc(tags=['Users'])
 class UsersListResource(MethodResource):
+    @doc(description='Get users')
+    @marshal_with(UserSchema(many=True))
     def get(self):
         users = UserModel.query.all()
-        return users_schema.dump(users), 200
+        return users, 200
 
     @use_kwargs(UserRequestSchema, location='json')
     @marshal_with(UserSchema)
