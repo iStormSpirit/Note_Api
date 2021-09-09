@@ -1,6 +1,6 @@
 from api import auth, abort, g, Resource, reqparse
 from api.models.note import NoteModel
-from api.schemas.note import note_schema, notes_schema, NoteSchema, NoteRequestSchema
+from api.schemas.note import note_schema, notes_schema, NoteSchema
 from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
 
@@ -51,10 +51,13 @@ class NoteResource(MethodResource):
 
 @doc(tags=['Note'])
 class NotesListResource(MethodResource):
+    @auth.login_required
     @doc(description='Get all notes')
+    @doc(security=[{"basicAuth": []}])
     @marshal_with(NoteSchema(many=True))
     def get(self):
-        notes = NoteModel.query.all()
+        author = g.user
+        notes = NoteModel.query.filter_by(author_id=author.id)
         return notes, 200
 
     @auth.login_required

@@ -3,6 +3,7 @@ from api.models.user import UserModel
 from api.schemas.user import user_schema, users_schema, UserSchema, UserRequestSchema
 from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
+from webargs import fields
 
 
 @doc(tags=['Users'])
@@ -18,14 +19,12 @@ class UserResource(MethodResource):
     @auth.login_required(role="admin")
     @doc(description='Edit user by id')
     @marshal_with(UserSchema)
-    def put(self, user_id):
-        parser = reqparse.RequestParser()
-        parser.add_argument("username", required=True)
-        user_data = parser.parse_args()
+    @use_kwargs({"username": fields.Str()})
+    def put(self, user_id, **kwargs):
         user = UserModel.query.get(user_id)
         if not user:
             abort(404, error=f"User with id={user_id} not found")
-        user.username = user_data["username"]
+        user.username = kwargs["username"]
         user.save()
         return user, 200
 
