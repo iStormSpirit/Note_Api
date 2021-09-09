@@ -38,6 +38,10 @@ class UserModel(db.Model):
         except IntegrityError:
             db.session.rollback()
 
+    def remove(self):
+        db.session.delete(self)
+        db.session.commit()
+
     @staticmethod
     def verify_auth_token(token):
         s = Serializer(Config.SECRET_KEY)

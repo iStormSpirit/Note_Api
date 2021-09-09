@@ -26,8 +26,9 @@ class UserResource(Resource):
     def delete(self, user_id):
         user = UserModel.query.get(user_id)
         if user:
-            db.session.delete(user)
-            db.session.commit()
+            user.remove()
+            # db.session.delete(user)
+            # db.session.commit()
             return user_schema.dump(user), 200
         return "Not found", 404
 
