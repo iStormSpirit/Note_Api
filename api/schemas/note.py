@@ -16,5 +16,16 @@ class NoteSchema(ma.SQLAlchemySchema):
     author = ma.Nested(UserSchema())
 
 
+# Десериализация запроса(request)
+class NoteRequestSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = NoteModel
+
+    text = ma.Str()
+    private = ma.Str()
+    id = ma.Str()
+    author = ma.Str()
+
+
 note_schema = NoteSchema()
 notes_schema = NoteSchema(many=True)
