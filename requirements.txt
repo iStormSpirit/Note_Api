@@ -10,3 +10,6 @@ ipython
 gunicorn
 psycopg2-binary
 passlib
+apispec==5.1.0
+webargs==8.0.1
+flask-apispec==0.11.0

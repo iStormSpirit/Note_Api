@@ -1,4 +1,4 @@
-from api import api, app
+from api import api, app, docs
 from api.resources.note import NoteResource, NotesListResource
 from api.resources.user import UserResource, UsersListResource
 from api.resources.auth import TokenResource
@@ -25,5 +25,7 @@ api.add_resource(NoteResource,
                  '/notes/<int:note_id>',  # GET, PUT, DELETE #
                  )
 
+docs.register(UserResource)
+docs.register(UsersListResource)
 if __name__ == '__main__':
     app.run(debug=Config.DEBUG, port=Config.PORT)
