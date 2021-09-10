@@ -21,7 +21,6 @@ class TagRequestSchema(ma.SQLAlchemySchema):
         model = TagModel
 
     id = ma.Str()
-    name = ma.Str()
 
 
 tag_schema = TagSchema()

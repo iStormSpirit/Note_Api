@@ -16,15 +16,27 @@ class TagsResource(MethodResource):
             abort(404, error=f"Tag with id={tag_id} not found")
         return tag, 200
 
+    @auth.login_required(role="admin")
     @doc(description='Edit note by id')
     @marshal_with(TagSchema)
-    def put(self, note_id):
-        pass
+    @use_kwargs({"name": fields.Str()})
+    def put(self, tag_id, **kwargs):
+        tag = TagModel.query.get(tag_id)
+        if not tag:
+            abort(404, error=f"User with id={tag_id} not found")
+        tag.name = kwargs["name"]
+        tag.save()
+        return tag, 200
 
+    @auth.login_required(role="admin")
     @doc(description='Delete tag by id')
     @marshal_with(TagSchema)
     def delete(self, tag_id):
-        pass
+        tag = TagModel.query.get(tag_id)
+        if tag:
+            tag.delete()
+            return tag, 200
+        abort(404, error=f"Tag with id={tag_id} not found")
 
 
 @doc(tags=['Tags'])
