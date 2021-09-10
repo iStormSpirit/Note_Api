@@ -8,12 +8,13 @@ from webargs import fields
 
 @doc(tags=['Tags'])
 class TagsResource(MethodResource):
-    @doc(description='Get tags')
-    @marshal_with(TagSchema(many=True))
-    def get(self):
-        tags = TagModel.query.all()
-        return tags, 200
-        pass
+    @marshal_with(TagSchema)
+    @doc(description='Get tags by tag id', summary="Get Tag")
+    def get(self, tag_id):
+        tag = TagModel.query.get(tag_id)
+        if not tag:
+            abort(404, error=f"Tag with id={tag_id} not found")
+        return tag, 200
 
 
 @doc(tags=['Tags'])
@@ -22,6 +23,8 @@ class TagsListResource(MethodResource):
     @marshal_with(TagSchema(many=True))
     def get(self):
         tags = TagModel.query.all()
+        if not tags:
+            abort(404, error=f"Tags not found")
         return tags, 200
 
     @doc(description='Create tags')

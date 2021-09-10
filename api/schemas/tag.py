@@ -15,6 +15,9 @@ class TagSchema(ma.SQLAlchemySchema):
     name = ma.auto_field()
 
 
+tag_schema = TagSchema()
+tags_schema = TagSchema(many=True)
+
 # # Десериализация запроса(request)
 # class UserRequestSchema(ma.SQLAlchemySchema):
 #     class Meta:
@@ -24,5 +27,3 @@ class TagSchema(ma.SQLAlchemySchema):
 #     password = ma.Str()
 #
 #
-# user_schema = UserSchema()
-# users_schema = UserSchema(many=True)
