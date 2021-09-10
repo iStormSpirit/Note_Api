@@ -25,19 +25,16 @@ class NoteResource(MethodResource):
     @auth.login_required
     @doc(summary="Edit Note by id", description='Edit note by id', security=[{"basicAuth": []}])
     @marshal_with(NoteSchema)
-    def put(self, note_id):
+    @use_kwargs(NoteRequestSchema, location=('json'))
+    def put(self, note_id, **kwargs):
         author = g.user
-        parser = reqparse.RequestParser()
-        parser.add_argument("text", required=True)
-        parser.add_argument("private", type=bool)
-        note_data = parser.parse_args()
         note = NoteModel.query.get(note_id)
         if not note:
             abort(404, error=f"note {note_id} not found")
         if note.author != author:
-            abort(403, error=f"Forbidden")
-        note.text = note_data["text"]
-        note.private = note_data.get("private") or note.private
+            abort(403, error=_(f"Forbidden"))
+        note.text = kwargs["text"]
+        note.private = kwargs["private"]
         note.save()
         return note, 200
 
