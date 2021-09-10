@@ -49,6 +49,14 @@ class NoteResource(MethodResource):
         return note_dict, 200
 
 
+@doc(tags=['Notes'])
+class NotesPublicResource(MethodResource):
+    @marshal_with(NoteSchema(many=True))
+    def get(self):
+        notes = NoteModel.query.filter_by(private=False)
+        return notes, 200
+
+
 @doc(tags=['Note'])
 class NotesListResource(MethodResource):
     @auth.login_required

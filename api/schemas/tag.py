@@ -20,7 +20,7 @@ class TagRequestSchema(ma.SQLAlchemySchema):
     class Meta:
         model = TagModel
 
-    id = ma.Str()
+    name = ma.Str()
 
 
 tag_schema = TagSchema()
