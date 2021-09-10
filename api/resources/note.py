@@ -10,6 +10,7 @@ class NoteResource(MethodResource):
     @doc(description='Get note by id')
     @marshal_with(NoteSchema)
     @auth.login_required
+    @doc(security=[{"basicAuth": []}])
     def get(self, note_id):
         author = g.user
         note = NoteModel.query.get(note_id)
@@ -22,6 +23,7 @@ class NoteResource(MethodResource):
     @auth.login_required
     @doc(description='Edit note by id')
     @marshal_with(NoteSchema)
+    @doc(security=[{"basicAuth": []}])
     def put(self, note_id):
         author = g.user
         parser = reqparse.RequestParser()
@@ -40,6 +42,7 @@ class NoteResource(MethodResource):
 
     @doc(description='Delete note by id')
     @marshal_with(NoteSchema)
+    @doc(security=[{"basicAuth": []}])
     def delete(self, note_id):
         note = NoteModel.query.get(note_id)
         if not note:
@@ -47,14 +50,6 @@ class NoteResource(MethodResource):
         note_dict = note
         note.delete()
         return note_dict, 200
-
-
-@doc(tags=['Notes'])
-class NotesPublicResource(MethodResource):
-    @marshal_with(NoteSchema(many=True))
-    def get(self):
-        notes = NoteModel.query.filter_by(private=False)
-        return notes, 200
 
 
 @doc(tags=['Note'])
@@ -71,6 +66,7 @@ class NotesListResource(MethodResource):
     @auth.login_required
     @doc(description='Create note')
     @marshal_with(NoteSchema)
+    @doc(security=[{"basicAuth": []}])
     def post(self):
         author = g.user
         parser = reqparse.RequestParser()
@@ -80,3 +76,12 @@ class NotesListResource(MethodResource):
         note = NoteModel(author_id=author.id, **note_data)
         note.save()
         return note, 201
+
+
+@doc(tags=['Notes'])
+class NotesPublicResource(MethodResource):
+    @marshal_with(NoteSchema(many=True))
+    @doc(description='Get public notes')
+    def get(self):
+        notes = NoteModel.query.filter_by(private=False)
+        return notes, 200

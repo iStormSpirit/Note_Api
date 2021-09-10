@@ -20,6 +20,7 @@ class UserResource(MethodResource):
     @doc(description='Edit user by id')
     @marshal_with(UserSchema)
     @use_kwargs({"username": fields.Str()})
+    @doc(security=[{"basicAuth": []}])
     def put(self, user_id, **kwargs):
         user = UserModel.query.get(user_id)
         if not user:
@@ -31,6 +32,7 @@ class UserResource(MethodResource):
     @auth.login_required(role="admin")
     @doc(description='Delete user by id.')
     @marshal_with(UserSchema)
+    @doc(security=[{"basicAuth": []}])
     def delete(self, user_id):
         user = UserModel.query.get(user_id)
         if user:

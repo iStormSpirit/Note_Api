@@ -20,6 +20,7 @@ class TagsResource(MethodResource):
     @doc(description='Edit note by id')
     @marshal_with(TagSchema)
     @use_kwargs({"name": fields.Str()})
+    @doc(security=[{"basicAuth": []}])
     def put(self, tag_id, **kwargs):
         tag = TagModel.query.get(tag_id)
         if not tag:
@@ -31,6 +32,7 @@ class TagsResource(MethodResource):
     @auth.login_required(role="admin")
     @doc(description='Delete tag by id')
     @marshal_with(TagSchema)
+    @doc(security=[{"basicAuth": []}])
     def delete(self, tag_id):
         tag = TagModel.query.get(tag_id)
         if tag:
