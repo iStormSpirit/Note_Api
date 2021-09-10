@@ -1,6 +1,6 @@
-from api import Resource, abort, reqparse, auth, db
+from api import abort, auth
 from api.models.user import UserModel
-from api.schemas.user import user_schema, users_schema, UserSchema, UserRequestSchema
+from api.schemas.user import UserSchema, UserRequestSchema
 from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
 from webargs import fields
@@ -8,7 +8,7 @@ from webargs import fields
 
 @doc(tags=['Users'])
 class UserResource(MethodResource):
-    @doc(description='Get user by id')
+    @doc(summary="Get User by id", description='Get user by id')
     @marshal_with(UserSchema)
     def get(self, user_id):
         user = UserModel.query.get(user_id)
@@ -17,10 +17,9 @@ class UserResource(MethodResource):
         return user, 200  # user_schema.dump(user) благодаря @marshal_with(UserSchema) теперь не нужен
 
     @auth.login_required(role="admin")
-    @doc(description='Edit user by id')
+    @doc(summary="Edit User by id", description='Edit user by id', security=[{"basicAuth": []}])
     @marshal_with(UserSchema)
     @use_kwargs({"username": fields.Str()})
-    @doc(security=[{"basicAuth": []}])
     def put(self, user_id, **kwargs):
         user = UserModel.query.get(user_id)
         if not user:
@@ -30,9 +29,10 @@ class UserResource(MethodResource):
         return user, 200
 
     @auth.login_required(role="admin")
-    @doc(description='Delete user by id.')
+    @doc(summary="Delete User by id", description='Delete user by id.', security=[{"basicAuth": []}])
+    @doc(responses={401: {"description": "Not authorization"}})
+    @doc(responses={404: {"description": "Not found"}})
     @marshal_with(UserSchema)
-    @doc(security=[{"basicAuth": []}])
     def delete(self, user_id):
         user = UserModel.query.get(user_id)
         if user:
@@ -43,12 +43,13 @@ class UserResource(MethodResource):
 
 @doc(tags=['Users'])
 class UsersListResource(MethodResource):
-    @doc(description='Get users')
+    @doc(summary="Get Users", description='Get users')
     @marshal_with(UserSchema(many=True))
     def get(self):
         users = UserModel.query.all()
         return users, 200
 
+    @doc(summary="Create Users", description='Create users')
     @use_kwargs(UserRequestSchema, location='json')
     @marshal_with(UserSchema)
     def post(self, **kwargs):
