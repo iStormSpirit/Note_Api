@@ -1,6 +1,6 @@
 from api import auth, abort, g, Resource, reqparse
 from api.models.tag import TagModel
-from api.schemas.tag import TagSchema
+from api.schemas.tag import TagSchema, TagRequestSchema
 from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
 from webargs import fields
@@ -15,6 +15,16 @@ class TagsResource(MethodResource):
         if not tag:
             abort(404, error=f"Tag with id={tag_id} not found")
         return tag, 200
+
+    @doc(description='Edit note by id')
+    @marshal_with(TagSchema)
+    def put(self, note_id):
+        pass
+
+    @doc(description='Delete tag by id')
+    @marshal_with(TagSchema)
+    def delete(self, tag_id):
+        pass
 
 
 @doc(tags=['Tags'])

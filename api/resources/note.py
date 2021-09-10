@@ -38,7 +38,7 @@ class NoteResource(MethodResource):
         note.save()
         return note, 200
 
-    @doc(description='Get note by id')
+    @doc(description='Delete note by id')
     @marshal_with(NoteSchema)
     def delete(self, note_id):
         note = NoteModel.query.get(note_id)

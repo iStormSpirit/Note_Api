@@ -15,15 +15,14 @@ class TagSchema(ma.SQLAlchemySchema):
     name = ma.auto_field()
 
 
+# Десериализация запроса(request)
+class TagRequestSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = TagModel
+
+    id = ma.Str()
+    name = ma.Str()
+
+
 tag_schema = TagSchema()
 tags_schema = TagSchema(many=True)
-
-# # Десериализация запроса(request)
-# class UserRequestSchema(ma.SQLAlchemySchema):
-#     class Meta:
-#         model = UserModel
-#
-#     username = ma.Str()
-#     password = ma.Str()
-#
-#
