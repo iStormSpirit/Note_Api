@@ -42,7 +42,10 @@ class NoteResource(MethodResource):
     @doc(summary="Delete Note by id", description='Delete note by id', security=[{"basicAuth": []}])
     @marshal_with(NoteSchema)
     def delete(self, note_id):
+        author = g.user
         note = NoteModel.query.get(note_id)
+        if note.author != author:
+            abort(403, error=f"Forbidden")
         if not note:
             abort(404, error=f"Note with id:{note_id} not found")
         note_dict = note
@@ -72,7 +75,6 @@ class NotesListResource(MethodResource):
         return note, 201
 
 
-# FIXME: фикс возможности добавлять теги, только для авторизованных
 @doc(tags=['Note'])
 class NoteTagsResource(MethodResource):
     @auth.login_required
@@ -80,7 +82,10 @@ class NoteTagsResource(MethodResource):
     @use_kwargs({"tags": fields.List(fields.Int())}, location='json')
     @marshal_with(NoteSchema)
     def put(self, note_id, **kwargs):
+        author = g.user
         note = NoteModel.query.get(note_id)
+        if note.author != author:
+            abort(403, error=f"Forbidden")
         if not note:
             abort(404, error=f"note {note_id} not found")
         for tag_id in kwargs["tags"]:
@@ -96,7 +101,10 @@ class NoteTagsResource(MethodResource):
     @use_kwargs({"tags": fields.List(fields.Int())}, location='json')
     @marshal_with(NoteSchema)
     def delete(self, note_id, **kwargs):
+        author = g.user
         note = NoteModel.query.get(note_id)
+        if note.author != author:
+            abort(403, error=f"Forbidden")
         if not note:
             abort(404, error=f"note {note_id} not found")
         for tag_id in kwargs["tags"]:
@@ -124,14 +132,17 @@ class NotesPublicResource(MethodResource):
 
 @doc(tags=['NotesPublicFilter'])
 class NoteFilterByTagResource(MethodResource):
+    @auth.login_required
     @doc(summary="Get all public notes with tags", description='Filter all public notes by tags')
     @use_kwargs({"tag": fields.Str()}, location='query')
     @marshal_with(NoteSchema(many=True))
+    @doc(security=[{"basicAuth": []}])
     def get(self, **kwargs):
         notes = NoteModel.query.filter_by(private=False)
         if kwargs:
             notes_t = NoteModel.query.filter(NoteModel.tags.any(name=kwargs["tag"]))
-            return notes_t, 200
+            notes_public_tag = notes_t.filter_by(private=False)
+            return notes_public_tag, 200
         return notes, 200
 
 
