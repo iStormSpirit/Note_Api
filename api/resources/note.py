@@ -1,4 +1,4 @@
-from api import auth, abort, g, reqparse
+from api import auth, abort, g
 from api.models.user import UserModel
 from api.models.note import NoteModel
 from api.models.tag import TagModel
@@ -53,8 +53,9 @@ class NoteResource(MethodResource):
 @doc(tags=['Note'])
 class NotesListResource(MethodResource):
     @auth.login_required
-    @doc(summary="Get Note", description='Get all notes', security=[{"basicAuth": []}])
+    @doc(summary="Get Note", description='Get all notes')
     @marshal_with(NoteSchema(many=True))
+    @doc(security=[{"basicAuth": []}])
     def get(self):
         author = g.user
         notes = NoteModel.query.filter_by(author_id=author.id)
@@ -107,7 +108,7 @@ class NoteTagsResource(MethodResource):
         return note, 200
 
 
-@doc(tags=['NotesFilter'])
+@doc(tags=['NotesPublicFilter'])
 class NotesPublicResource(MethodResource):
     @doc(summary="Get all public notes with filter by user ", description='Get all public notes ( + filter by username')
     @use_kwargs({"username": fields.Str()}, location='query')
@@ -121,23 +122,29 @@ class NotesPublicResource(MethodResource):
         return notes, 200
 
 
-@doc(tags=['NotesFilter'])
+@doc(tags=['NotesPublicFilter'])
 class NoteFilterByTagResource(MethodResource):
-    @auth.login_required
-    @doc(summary="Get all notes by tags", description='Filter by tags in note', security=[{"basicAuth": []}])
+    @doc(summary="Get all public notes with tags", description='Filter all public notes by tags')
     @use_kwargs({"tag": fields.Str()}, location='query')
     @marshal_with(NoteSchema(many=True))
     def get(self, **kwargs):
-        notes = NoteModel.query.filter(NoteModel.tags.any(name=kwargs["tag"]))
+        notes = NoteModel.query.filter_by(private=False)
+        if kwargs:
+            notes_t = NoteModel.query.filter(NoteModel.tags.any(name=kwargs["tag"]))
+            return notes_t, 200
         return notes, 200
 
 
-# @doc(tags=['NotesFilter'])
-# class NotesFilterByUserResource(MethodResource):
-#     @doc(summary="Get all public notes by author", description='Filter by author in public notes')
-#     @use_kwargs({"username": fields.Str()}, location='query')
-#     @marshal_with(NoteSchema(many=True), code=200)
-#     def get(self, **kwargs):
-#         notes = NoteModel.query.filter(NoteModel.author.has(username=kwargs["username"]))
-#         notes_public = notes.filter_by(private=False)
-#         return notes_public, 200
+@doc(tags=['NotesPublicFilter'])
+class NoteFilterByTagPlusUserResource(MethodResource):
+    @doc(summary="Get all public notes with tags + user", description='Filter all public notes by tags + user')
+    @use_kwargs({"tag": fields.Str(), "username": fields.Str()}, location='query')
+    @marshal_with(NoteSchema(many=True))
+    def get(self, **kwargs):
+        notes = NoteModel.query.filter_by(private=False)
+        if kwargs:
+            notes_t = NoteModel.query.filter(NoteModel.tags.any(name=kwargs["tag"]))
+            notes_public = notes_t.filter_by(private=False)
+            notes_u = notes_public.filter(NoteModel.author.has(username=kwargs["username"]))
+            return notes_u, 200
+        return notes, 200

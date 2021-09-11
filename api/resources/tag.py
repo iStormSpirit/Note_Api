@@ -1,6 +1,6 @@
 from api import auth, abort
 from api.models.tag import TagModel
-from api.schemas.tag import TagSchema, TagRequestSchema
+from api.schemas.tag import TagSchema
 from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
 from webargs import fields

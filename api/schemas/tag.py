@@ -16,12 +16,12 @@ class TagSchema(ma.SQLAlchemySchema):
 
 
 # Десериализация запроса(request)
-class TagRequestSchema(ma.SQLAlchemySchema):
-    class Meta:
-        model = TagModel
-
-    name = ma.Str()
-
+# class TagRequestSchema(ma.SQLAlchemySchema):
+#     class Meta:
+#         model = TagModel
+#
+#     name = ma.Str()
+#
 
 tag_schema = TagSchema()
 tags_schema = TagSchema(many=True)
