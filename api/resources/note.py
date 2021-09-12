@@ -116,7 +116,7 @@ class NoteTagsResource(MethodResource):
         return note, 200
 
 
-@doc(tags=['NotesPublicFilter'])
+@doc(tags=['NotesFilter'])
 class NoteFilterResource(MethodResource):
     @doc(summary="Get all public notes + filter's",
          description='Get all public notes + filter by username/ username + tag')
@@ -133,14 +133,10 @@ class NoteFilterResource(MethodResource):
             notes_user = NoteModel.query.filter(NoteModel.author.has(username=kwargs["username"]))
             notes_public = notes_user.filter_by(private=False)
             return notes_public, 200
-        if "tag" in kwargs:
-            notes_tags = NoteModel.query.filter(NoteModel.tags.any(name=kwargs["tag"]))
-            notes_public_tag = notes_tags.filter_by(private=False)
-            return notes_public_tag, 200
         return notes, 200
 
 
-@doc(tags=['NotesPublicFilter'])
+@doc(tags=['NotesFilter'])
 class NotesFilterByTagResource(MethodResource):
     @auth.login_required
     @doc(summary="Get all public notes + filter by tags", description='Filter all public + filter by tags')
