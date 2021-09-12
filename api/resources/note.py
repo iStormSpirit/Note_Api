@@ -117,8 +117,8 @@ class NoteTagsResource(MethodResource):
 
 
 @doc(tags=['NotesPublicFilter'])
-class NotesPublicResource(MethodResource):
-    @doc(summary="Get all public notes with filter by user ", description='Get all public notes ( + filter by username')
+class NotesFilterByUserResource(MethodResource):
+    @doc(summary="Get all public notes + filter by username ", description='Get all public notes + filter by username')
     @use_kwargs({"username": fields.Str()}, location='query')
     @marshal_with(NoteSchema(many=True))
     def get(self, **kwargs):
@@ -131,12 +131,12 @@ class NotesPublicResource(MethodResource):
 
 
 @doc(tags=['NotesPublicFilter'])
-class NoteFilterByTagResource(MethodResource):
-    @auth.login_required
-    @doc(summary="Get all public notes with tags", description='Filter all public notes by tags')
+class NotesFilterByTagResource(MethodResource):
+    # @auth.login_required
+    @doc(summary="Get all public notes + filter by tags", description='Filter all public + filter by tags')
     @use_kwargs({"tag": fields.Str()}, location='query')
     @marshal_with(NoteSchema(many=True))
-    @doc(security=[{"basicAuth": []}])
+    # @doc(security=[{"basicAuth": []}])
     def get(self, **kwargs):
         notes = NoteModel.query.filter_by(private=False)
         if kwargs:
@@ -147,8 +147,8 @@ class NoteFilterByTagResource(MethodResource):
 
 
 @doc(tags=['NotesPublicFilter'])
-class NoteFilterByTagPlusUserResource(MethodResource):
-    @doc(summary="Get all public notes with tags + user", description='Filter all public notes by tags + user')
+class NotesFilterByTagPlusUserResource(MethodResource):
+    @doc(summary="Get all public notes with (tags and user)", description='Get all public notes with (tags and user)')
     @use_kwargs({"tag": fields.Str(), "username": fields.Str()}, location='query')
     @marshal_with(NoteSchema(many=True))
     def get(self, **kwargs):
