@@ -125,17 +125,17 @@ class NoteFilterResource(MethodResource):
     def get(self, **kwargs):
         notes = NoteModel.query.filter_by(private=False)
         if "username" and "tag" in kwargs:
-            notes_t = NoteModel.query.filter(NoteModel.tags.any(name=kwargs["tag"]))
-            notes_public = notes_t.filter_by(private=False)
-            notes_u = notes_public.filter(NoteModel.author.has(username=kwargs["username"]))
-            return notes_u, 200
+            notes_tags = NoteModel.query.filter(NoteModel.tags.any(name=kwargs["tag"]))
+            notes_public = notes_tags.filter_by(private=False)
+            notes_user = notes_public.filter(NoteModel.author.has(username=kwargs["username"]))
+            return notes_user, 200
         if "username" in kwargs:
-            notes = NoteModel.query.filter(NoteModel.author.has(username=kwargs["username"]))
-            notes_public = notes.filter_by(private=False)
+            notes_user = NoteModel.query.filter(NoteModel.author.has(username=kwargs["username"]))
+            notes_public = notes_user.filter_by(private=False)
             return notes_public, 200
         if "tag" in kwargs:
-            notes_t = NoteModel.query.filter(NoteModel.tags.any(name=kwargs["tag"]))
-            notes_public_tag = notes_t.filter_by(private=False)
+            notes_tags = NoteModel.query.filter(NoteModel.tags.any(name=kwargs["tag"]))
+            notes_public_tag = notes_tags.filter_by(private=False)
             return notes_public_tag, 200
         return notes, 200
 
