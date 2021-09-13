@@ -6,21 +6,35 @@ from api.resources.auth import TokenResource
 from api.resources.tag import TagsResource, TagsListResource
 from config import Config
 
+# TODO сделано
 api.add_resource(UsersListResource, '/users')  # GET, POST
 api.add_resource(UserResource, '/users/<int:user_id>')  # GET, PUT, DELETE
 
+# TODO сделано
 api.add_resource(TokenResource, '/auth/token')  # GET
 
+# TODO сделано
 api.add_resource(NotesListResource, '/notes')  # GET, POST
 api.add_resource(NoteResource, '/notes/<int:note_id>')  # GET, PUT, DELETE
 
+# TODO сделано
 api.add_resource(NoteTagsResource, '/notes/<int:note_id>/tags')  # PUT # DELETE
 
+# TODO сделано
 api.add_resource(TagsListResource, '/tags')  # GET, POST
 api.add_resource(TagsResource, '/tags/<int:tag_id>')  # GET, PUT, DELETE
 
-api.add_resource(NoteFilterResource, '/notes/public')  # GET All Public Notes or filter by username/ username + tag
-api.add_resource(NotesFilterByTagResource, '/notes/filter/tag')  # GET All Public Notes or filter by Tags (need auth)
+# TODO частично сделано
+api.add_resource(NoteFilterResource, '/notes/filter')  # GET notes by user / user + tag
+
+# TODO сделано
+api.add_resource(NotesFilterByTagResource, '/notes/filter/tag')  # GET All Public Notes or notes by Tags (need auth)
+
+# api.add_resource(NoteTagResource, '/notes/filter/1/tag')
+# docs.register(NoteTagResource)
+#
+# api.add_resource(NoteTexResource, '/notes/text')
+# docs.register(NoteTexResource)
 
 docs.register(UserResource)
 docs.register(UsersListResource)

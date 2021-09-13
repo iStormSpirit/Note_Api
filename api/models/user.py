@@ -37,6 +37,7 @@ class UserModel(db.Model):
             db.session.add(self)
             db.session.commit()
         except IntegrityError:
+            print(f"User with username={self.username} already exist")
             db.session.rollback()
 
     def remove(self):
@@ -54,3 +55,6 @@ class UserModel(db.Model):
             return None  # invalid token
         user = UserModel.query.get(data['id'])
         return user
+
+    def __repr__(self):
+        return f"User {self.username}, role:{self.role}"

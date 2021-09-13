@@ -4,6 +4,7 @@ from api.schemas.user import UserSchema, UserRequestSchema
 from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
 from webargs import fields
+import logging
 
 
 @doc(tags=['Users'])
@@ -29,7 +30,7 @@ class UserResource(MethodResource):
         return user, 200
 
     @auth.login_required(role="admin")
-    @doc(summary="Delete User by id", description='Delete user by id.', security=[{"basicAuth": []}])
+    @doc(summary="Delete User by id", description='Delete user by id.')
     @doc(responses={401: {"description": "Not authorization"}})
     @doc(responses={404: {"description": "Not found"}})
     @marshal_with(UserSchema)
@@ -38,7 +39,7 @@ class UserResource(MethodResource):
         if user:
             user.remove()
             return user, 200
-        return "Not found", 404
+        abort(404, error=f"Not Found user {user_id}")
 
 
 @doc(tags=['Users'])
@@ -57,4 +58,5 @@ class UsersListResource(MethodResource):
         user.save()
         if not user.id:
             abort(400, error=f"User with username:{user.username} already exist")
+        logging.info("User create!!!")
         return user, 201

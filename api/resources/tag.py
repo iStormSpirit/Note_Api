@@ -41,7 +41,7 @@ class TagsResource(MethodResource):
 
 @doc(tags=['Tags'])
 class TagsListResource(MethodResource):
-    @doc(summary="Get tags", description='Get tags')
+    @doc(summary="Get all tags", description='Get all tags')
     @marshal_with(TagSchema(many=True))
     def get(self):
         tags = TagModel.query.all()
