@@ -38,7 +38,8 @@ class NoteResource(MethodResource):
         return note, 200
 
     @auth.login_required
-    @doc(summary="Delete Note by id", description='Delete note by id', security=[{"basicAuth": []}])
+    # @doc(summary="Delete Note by id", description='Delete note by id', security=[{"basicAuth": []}])
+    @doc(summary="Move Note by id to archive", description='Move Note by id to archive', security=[{"basicAuth": []}])
     @marshal_with(NoteSchema)
     def delete(self, note_id):
         author = g.user
@@ -47,9 +48,8 @@ class NoteResource(MethodResource):
             abort(403, error=f"Forbidden")
         if not note:
             abort(404, error=f"Note with id:{note_id} not found")
-        note_dict = note
         note.delete()
-        return note_dict, 200
+        return note, 200
 
 
 @doc(tags=['Note'])
@@ -167,15 +167,16 @@ class NoteTexResource(MethodResource):
         abort(404, error=f"Need key to search")
 
 
-# @doc(tags=['NotesFilter'])
-# class NotesListTagResource(MethodResource):
-#     @doc(summary="find by list tags", description='find by list tags')
-#     @use_kwargs({"tag": fields.Str()}, location='query')
-#     @marshal_with(NoteSchema(many=True))
-#     def get(self, **kwargs):
-#         notes = NoteModel.query.all()
-#         if kwargs:
-#             notes = NoteModel.query.filter(NoteModel.tags.any(name=kwargs["tag"]))
-#             return notes, 200
-#         return notes, 200
-#         pass
+@doc(tags=['Note'])
+class NoteRestoreResource(MethodResource):
+    # '/notes/<int:note_id>/restore'
+    @doc(summary="back notes from archive", description='back notes from archive')
+    @marshal_with(NoteSchema)
+    def put(self, note_id):
+        note = NoteModel.query.get(note_id)
+        if not note:
+            abort(404, error=f"Not found note with id {note_id}")
+        if not note.archive:
+            return {}, 304
+        note.restore()
+        return note, 200

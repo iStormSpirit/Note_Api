@@ -14,13 +14,19 @@ class NoteModel(db.Model):
     text = db.Column(db.String(255), unique=False, nullable=False)
     private = db.Column(db.Boolean(), default=True, server_default="true", nullable=False)
     tags = db.relationship(TagModel, secondary=tags, lazy='subquery', backref=db.backref('notes', lazy=True))
+    archive = db.Column(db.Boolean(), default=True, server_default="false", nullable=False)
 
     def save(self):
         db.session.add(self)
         db.session.commit()
 
+    def restore(self):
+        self.archive = False
+        db.session.commit()
+
     def delete(self):
-        db.session.delete(self)
+        self.archive = True
+        # db.session.delete(self)
         db.session.commit()
 
     def __repr__(self):
