@@ -95,6 +95,10 @@ class NoteTagsResource(MethodResource):
         note.save()
         return note, 200
 
+    # FIXME почему в консоли появляется предупреждение?
+    #  /home/boo/Projects/Flask2/NoteApi/note_venv/lib/python3.8/site-packages/apispec/ext/marshmallow/common.py:127:
+    #  UserWarning: Multiple schemas resolved to the name Generated. The name has been modified.
+    #  Either manually add each of the schemas with a different name or provide a custom schema_name_resolver. warnings.warn(
     @auth.login_required
     @doc(summary="Delete tags from Note", description='Delete tags to Note', security=[{"basicAuth": []}])
     @use_kwargs({"tags": fields.List(fields.Int())}, location='json')
@@ -110,7 +114,7 @@ class NoteTagsResource(MethodResource):
             tag = TagModel.query.get(tag_id)
             if not note.tags:
                 abort(404, error=f"tag {tag_id} in note {note_id} not found")
-            note.tags.remove(tag)
+            note.tags.delete(tag)
         note.save()
         return note, 200
 
@@ -149,16 +153,15 @@ class NoteFilterResource(MethodResource):
         return notes, 200
 
 
+# FIXME как вывести ошибку если ключ поиска в заметках не найден
 @doc(tags=['NotesFilter'])
 class NoteTexResource(MethodResource):
-    @doc(summary="Gs",
-         description='Get ag')
-    @use_kwargs({"text": fields.Str()}, location='query')
+    @doc(summary="Find notes with text",
+         description='Find notes with text')
+    @use_kwargs({"text": fields.String(load_default="")}, location='query')
     @marshal_with(NoteSchema(many=True))
-    def get(self, **kwargs):
-        text = kwargs
-        notes = NoteModel.query.all()
+    def get(self, text):
         if text:
-            notes_text = notes.query.filter(NoteModel.text.like(f"%{text}%"))
-            return notes_text, 200
-        return notes, 200
+            notes = NoteModel.query.filter(NoteModel.text.like(f"%{text}%"))
+            return notes, 200
+        abort(404, error=f"Need key to search")
