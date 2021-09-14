@@ -3,7 +3,7 @@ __pycache__/
 upload/
 tmp/
 *env/
-#*.db
+*.db
 *.pyc
 *.log
 *.pot

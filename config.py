@@ -16,7 +16,7 @@ class Config:
     TEST_DATABASE_URI = 'sqlite:///' + os.path.join(base_dir, 'test.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = True
-    SQLALCHEMY_RECORD_QUERIES = True
+    # SQLALCHEMY_RECORD_QUERIES = True
     DEBUG = True
     PORT = 5000
     SECRET_KEY = "My secret key =)"
