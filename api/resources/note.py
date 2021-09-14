@@ -165,3 +165,17 @@ class NoteTexResource(MethodResource):
             notes = NoteModel.query.filter(NoteModel.text.like(f"%{text}%"))
             return notes, 200
         abort(404, error=f"Need key to search")
+
+
+# @doc(tags=['NotesFilter'])
+# class NotesListTagResource(MethodResource):
+#     @doc(summary="find by list tags", description='find by list tags')
+#     @use_kwargs({"tag": fields.Str()}, location='query')
+#     @marshal_with(NoteSchema(many=True))
+#     def get(self, **kwargs):
+#         notes = NoteModel.query.all()
+#         if kwargs:
+#             notes = NoteModel.query.filter(NoteModel.tags.any(name=kwargs["tag"]))
+#             return notes, 200
+#         return notes, 200
+#         pass
