@@ -62,7 +62,7 @@ class UsersListResource(MethodResource):
         return user, 201
 
 
-# FIXME добавить найти user1 or user2
+# FIXME добавить найти только user2
 @doc(tags=['NotesFilter'])
 class UserFindOrResource(MethodResource):
     @doc(summary="Find user by name",
@@ -70,7 +70,12 @@ class UserFindOrResource(MethodResource):
     @use_kwargs({"username": fields.Str(), "username2": fields.Str()}, location='query')
     @marshal_with(UserSchema(many=True))
     def get(self, **kwargs):
-        users = UserModel.query.filter(
-            (UserModel.username == kwargs["username"]) |
-            (UserModel.username == kwargs["username2"]))
-        return users, 200
+        if "username" and "username2" in kwargs:
+            users = UserModel.query.filter(
+                (UserModel.username == kwargs["username"]) |
+                (UserModel.username == kwargs["username2"]))
+            return users, 200
+        if "username" in kwargs:
+            users = UserModel.query.filter(UserModel.username == kwargs["username"])
+            return users, 200
+        abort(404, error="Not key for search")
