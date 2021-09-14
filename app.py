@@ -1,6 +1,6 @@
 from api import api, app, docs
 from api.resources.note import NoteResource, NotesListResource, NoteTagsResource, NotesFilterByTagResource, \
-    NoteFilterResource, NoteTexResource#, NotesListTagResource
+    NoteFilterResource, NoteTexResource  # , NotesListTagResource
 from api.resources.user import UserResource, UsersListResource, UserFindOrResource
 from api.resources.auth import TokenResource
 from api.resources.tag import TagsResource, TagsListResource
@@ -47,5 +47,14 @@ docs.register(NotesFilterByTagResource)
 
 docs.register(NoteTexResource)
 
+from config import Config
+from api import Message, mail
+
+msg = Message('test subject', sender=Config.ADMINS[0], recipients=Config.ADMINS)
+msg.body = 'text body'
+msg.html = '<b>HTML</b> body'
+
 if __name__ == '__main__':
+    # with app.app_context():
+    #     mail.send(msg)
     app.run(debug=Config.DEBUG, port=Config.PORT)
