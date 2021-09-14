@@ -10,7 +10,7 @@ from api.models.user import UserModel
 class UserSchema(ma.SQLAlchemySchema):
     class Meta:
         model = UserModel
-        fields = ('id', 'username')
+        fields = ('id', 'username', 'is_staff', 'role')
 
     id = ma.auto_field()
     username = ma.auto_field()

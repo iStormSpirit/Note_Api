@@ -1,7 +1,7 @@
 from api import api, app, docs
 from api.resources.note import NoteResource, NotesListResource, NoteTagsResource, NotesFilterByTagResource, \
     NoteFilterResource, NoteTexResource
-from api.resources.user import UserResource, UsersListResource
+from api.resources.user import UserResource, UsersListResource, UserFindOrResource
 from api.resources.auth import TokenResource
 from api.resources.tag import TagsResource, TagsListResource
 from config import Config
@@ -25,6 +25,8 @@ api.add_resource(NoteFilterResource, '/notes/filter')  # GET notes by user / use
 api.add_resource(NotesFilterByTagResource, '/notes/filter/tag')  # GET All Public Notes or notes by Tags (need auth)
 api.add_resource(NoteTexResource, '/notes/text')
 
+api.add_resource(UserFindOrResource, '/users/or')
+docs.register(UserFindOrResource)
 # api.add_resource(NoteTagResource, '/notes/filter/1/tag')
 # docs.register(NoteTagResource)
 

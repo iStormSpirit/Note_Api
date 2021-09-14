@@ -60,3 +60,17 @@ class UsersListResource(MethodResource):
             abort(400, error=f"User with username:{user.username} already exist")
         logging.info("User create!!!")
         return user, 201
+
+
+# FIXME добавить найти user1 or user2
+@doc(tags=['NotesFilter'])
+class UserFindOrResource(MethodResource):
+    @doc(summary="Find user by name",
+         description='Find user by name')
+    @use_kwargs({"username": fields.Str(), "username2": fields.Str()}, location='query')
+    @marshal_with(UserSchema(many=True))
+    def get(self, **kwargs):
+        users = UserModel.query.filter(
+            (UserModel.username == kwargs["username"]) |
+            (UserModel.username == kwargs["username2"]))
+        return users, 200
