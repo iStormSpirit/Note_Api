@@ -142,14 +142,16 @@ class NoteFilterResource(MethodResource):
     @use_kwargs({"username": fields.Str(), "tag": fields.Str()}, location='query')
     @marshal_with(NoteSchema(many=True))
     def get(self, **kwargs):
-        notes = NoteModel.query.all()
+        notes = NoteModel.query.filter_by(archive=False)
         if "username" and "tag" in kwargs:
             notes_tags = NoteModel.query.filter(NoteModel.tags.any(name=kwargs["tag"]))
             notes_user = notes_tags.filter(NoteModel.author.has(username=kwargs["username"]))
-            return notes_user, 200
+            notes = notes_user.filter_by(archive=False)
+            return notes, 200
         if "username" in kwargs:
             notes_user = NoteModel.query.filter(NoteModel.author.has(username=kwargs["username"]))
-            return notes_user, 200
+            notes = notes_user.filter_by(archive=False)
+            return notes, 200
         return notes, 200
 
 
