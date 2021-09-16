@@ -41,10 +41,11 @@ class Config:
     MAIL_PORT = 465
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
-    MAIL_USERNAME = 'testherokumail@gmail.com'
-    MAIL_PASSWORD = 'TESTheroku'
+    MAIL_USERNAME = '***'
+    MAIL_PASSWORD = '***'
     UPLOAD_FOLDER_NAME = 'upload'
     UPLOAD_FOLDER = os.path.join(base_dir, UPLOAD_FOLDER_NAME)
     LANGUAGES = ['en', 'ru']
+
     # administrator list
-    ADMINS = ['testherokumail@gmail.com']
+    ADMINS = ['***']

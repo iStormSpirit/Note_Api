@@ -10,6 +10,7 @@ from flask_babel import _
 
 
 @doc(tags=['Note'])
+@api.resource('/notes/<int:note_id>')
 class NoteResource(MethodResource):
     @auth.login_required
     @doc(summary="Get Note by id", description='Get note by id', security=[{"basicAuth": []}])
@@ -55,6 +56,7 @@ class NoteResource(MethodResource):
 
 
 @doc(tags=['Note'])
+@api.resource('/notes')
 class NotesListResource(MethodResource):
     @auth.login_required
     @doc(summary="Get notes list", security=[{"basicAuth": []}])
@@ -82,9 +84,9 @@ class NotesListResource(MethodResource):
         return note, 201
 
 
-@doc(tags=['Note'])
+@doc(tags=['Note extra options'])
+@api.resource('/notes/<int:note_id>/restore')
 class NoteRestoreResource(MethodResource):
-    # '/notes/<int:note_id>/restore'
     @auth.login_required
     @doc(summary="back notes from archive", description='back notes from archive', security=[{"basicAuth": []}])
     @marshal_with(NoteSchema)
@@ -101,7 +103,8 @@ class NoteRestoreResource(MethodResource):
         return note, 200
 
 
-@doc(tags=['Note'])
+@doc(tags=['Note extra options'])
+@api.resource('/notes/<int:note_id>/tags')
 class NoteTagsResource(MethodResource):
     @auth.login_required
     @doc(summary="Add tags to Note", description='Add tags to Note', security=[{"basicAuth": []}])
@@ -146,16 +149,17 @@ class NoteTagsResource(MethodResource):
         return note, 200
 
 
-# FIXME как вывести ошибку если ключ поиска в заметках не найден
-@doc(tags=['NotesFilter'])
+@doc(tags=['Note extra options'])
+@api.resource('/notes/like')
 class NoteTexResource(MethodResource):
-    @doc(summary="Find notes with text",
-         description='Find notes with text')
+    @auth.login_required
+    @doc(summary="Find notes with text", description='Find notes with text', security=[{"basicAuth": []}])
     @use_kwargs({"text": fields.String(load_default="")}, location='query')
     @marshal_with(NoteSchema(many=True))
     def get(self, text):
+        author = g.user
         if text:
-            notes = NoteModel.query.filter(NoteModel.text.like(f"%{text}%"))
+            notes = NoteModel.get_all_for_user(author).filter(NoteModel.text.like(f"%{text}%"))
             return notes, 200
         abort(404, error=f"Need key to search")
 

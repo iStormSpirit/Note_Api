@@ -14,43 +14,17 @@ def download_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 
 
-api.add_resource(UserFindLikeResource, '/user/like/')
-docs.register(UserFindLikeResource)
-
-api.add_resource(UsersListResource, '/users')  # GET, POST
-api.add_resource(UserResource, '/users/<int:user_id>')  # GET, PUT, DELETE
-api.add_resource(UserFindOrResource, '/users/or')  # GET Find user1 or user2
-
-api.add_resource(NotesListResource, '/notes')  # GET, POST
-api.add_resource(NoteResource, '/notes/<int:note_id>')  # GET, PUT, DELETE (delete = archive)
-api.add_resource(NoteRestoreResource, '/notes/<int:note_id>/restore')  # PUT (back notes from archive)
-
-api.add_resource(NoteTagsResource, '/notes/<int:note_id>/tags')  # PUT # DELETE
-
-api.add_resource(NoteTexResource, '/notes/text')  # GET Find all notes with text
-
-api.add_resource(TagsListResource, '/tags')  # GET, POST
-api.add_resource(TagsResource, '/tags/<int:tag_id>')  # GET, PUT, DELETE
-
-# api.add_resource(NotesListTagResource, '/notes/list/tags')
-# docs.register(NotesListTagResource)
-
-
 docs.register(UserResource)
 docs.register(UsersListResource)
 docs.register(UserFindOrResource)
-
+docs.register(UserFindLikeResource)
 docs.register(NoteResource)
 docs.register(NotesListResource)
 docs.register(NoteRestoreResource)
-
 docs.register(NoteTagsResource)
-
 docs.register(NoteTexResource)
-
 docs.register(TagsResource)
 docs.register(TagsListResource)
-
 docs.register(UploadPictureResource)
 
 msg = Message('test subject', sender=Config.ADMINS[0], recipients=Config.ADMINS)

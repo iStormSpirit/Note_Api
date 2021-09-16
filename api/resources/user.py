@@ -5,9 +5,11 @@ from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
 from webargs import fields
 import logging
+from api import api
 
 
 @doc(tags=['Users'])
+@api.resource('/users/<int:user_id>')
 class UserResource(MethodResource):
     @doc(summary="Get User by id", description='Get user by id')
     @marshal_with(UserSchema)
@@ -43,6 +45,7 @@ class UserResource(MethodResource):
 
 
 @doc(tags=['Users'])
+@api.resource('/users')
 class UsersListResource(MethodResource):
     @doc(summary="Get Users", description='Get users')
     @marshal_with(UserSchema(many=True))
@@ -63,10 +66,10 @@ class UsersListResource(MethodResource):
 
 
 # FIXME добавить найти только user2
-@doc(tags=['Users'])
+@doc(tags=['Users extra options'])
+@api.resource('/users/any')
 class UserFindOrResource(MethodResource):
-    @doc(summary="Find find any of user by name",
-         description='Find find any of user by name')
+    @doc(summary="Find any of user by name", description='Find any of user by name')
     @use_kwargs({"username": fields.Str(), "username2": fields.Str()}, location='query')
     @marshal_with(UserSchema(many=True))
     def get(self, **kwargs):
@@ -81,10 +84,10 @@ class UserFindOrResource(MethodResource):
         abort(404, error="Not key for search")
 
 
-@doc(tags=['Users'])
+@doc(tags=['Users extra options'])
+@api.resource('/users/like')
 class UserFindLikeResource(MethodResource):
-    @doc(summary="Find find any of user by name",
-         description='Find find any of user by name')
+    @doc(summary="Find users like ", description='Find users like')
     @use_kwargs({"username": fields.String(load_default="")}, location='query')
     @marshal_with(UserSchema(many=True))
     def get(self, username):

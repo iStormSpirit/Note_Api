@@ -1,4 +1,4 @@
-from api import auth, abort
+from api import auth, abort, api
 from api.models.tag import TagModel
 from api.schemas.tag import TagSchema
 from flask_apispec.views import MethodResource
@@ -7,6 +7,7 @@ from webargs import fields
 
 
 @doc(tags=['Tags'])
+@api.resource('/tags/<int:tag_id>')
 class TagsResource(MethodResource):
     @marshal_with(TagSchema)
     @doc(summary="Get tag by tag id", description='Get tags by tag id')
@@ -40,6 +41,7 @@ class TagsResource(MethodResource):
 
 
 @doc(tags=['Tags'])
+@api.resource('/tags')
 class TagsListResource(MethodResource):
     @doc(summary="Get all tags", description='Get all tags')
     @marshal_with(TagSchema(many=True))
