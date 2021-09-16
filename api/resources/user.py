@@ -63,10 +63,10 @@ class UsersListResource(MethodResource):
 
 
 # FIXME добавить найти только user2
-@doc(tags=['NotesFilter'])
+@doc(tags=['Users'])
 class UserFindOrResource(MethodResource):
-    @doc(summary="Find user by name",
-         description='Find user by name')
+    @doc(summary="Find find any of user by name",
+         description='Find find any of user by name')
     @use_kwargs({"username": fields.Str(), "username2": fields.Str()}, location='query')
     @marshal_with(UserSchema(many=True))
     def get(self, **kwargs):
