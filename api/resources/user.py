@@ -79,3 +79,16 @@ class UserFindOrResource(MethodResource):
             users = UserModel.query.filter(UserModel.username == kwargs["username"])
             return users, 200
         abort(404, error="Not key for search")
+
+
+@doc(tags=['Users'])
+class UserFindLikeResource(MethodResource):
+    @doc(summary="Find find any of user by name",
+         description='Find find any of user by name')
+    @use_kwargs({"username": fields.String(load_default="")}, location='query')
+    @marshal_with(UserSchema(many=True))
+    def get(self, username):
+        if username:
+            users = UserModel.query.filter(UserModel.username.like(f"%{username}%"))
+            return users, 200
+        abort(404, error=f"Need key to search")

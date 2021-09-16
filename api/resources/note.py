@@ -1,4 +1,4 @@
-from api import auth, abort, g
+from api import auth, abort, g, Resource, reqparse, api
 from api.models.note import NoteModel
 from api.models.tag import TagModel
 from api.schemas.note import NoteSchema, NoteEditSchema, NoteCreateSchema, NoteFilterSchema
@@ -6,6 +6,7 @@ from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
 from webargs import fields
 from sqlalchemy.orm.exc import NoResultFound
+from flask_babel import _
 
 
 @doc(tags=['Note'])
@@ -19,7 +20,7 @@ class NoteResource(MethodResource):
             note = NoteModel.get_all_for_user(author).filter_by(id=note_id).one()
             return note, 200
         except NoResultFound:
-            abort(404, error=f"Note with id={note_id} not found")
+            abort(404, error=f"Note with id {note_id} not found")
 
     @auth.login_required
     @doc(summary="Edit Note by id", description='Edit note by id', security=[{"basicAuth": []}])
@@ -40,7 +41,6 @@ class NoteResource(MethodResource):
         return note, 200
 
     @auth.login_required
-    # @doc(summary="Delete Note by id", description='Delete note by id', security=[{"basicAuth": []}])
     @doc(summary="Move Note by id to archive", description='Move Note by id to archive', security=[{"basicAuth": []}])
     @marshal_with(NoteSchema)
     def delete(self, note_id):
