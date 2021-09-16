@@ -2,6 +2,7 @@ import os
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 
+# pathlib - рекомендация для работы спутями
 base_dir = os.path.dirname(os.path.abspath(__file__))
 
 security_definitions = {
@@ -9,6 +10,8 @@ security_definitions = {
         "type": "basic"
     }
 }
+
+ma_plugin = MarshmallowPlugin()
 
 
 class Config:
@@ -26,19 +29,22 @@ class Config:
     APISPEC_SPEC = APISpec(
         title='Notes Project',
         version='v1',
-        plugins=[MarshmallowPlugin()],
+        plugins=[ma_plugin],
         securityDefinitions=security_definitions,
         security=[],
         openapi_version='2.0.0'
     )
     APISPEC_SWAGGER_URL = '/swagger'  # URI API Doc JSON
     APISPEC_SWAGGER_UI_URL = '/swagger-ui/'  # URI UI of API Doc
+
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 465
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
     MAIL_USERNAME = 'testherokumail@gmail.com'
     MAIL_PASSWORD = 'TESTheroku'
+    UPLOAD_FOLDER_NAME = 'upload'
+    UPLOAD_FOLDER = os.path.join(base_dir, UPLOAD_FOLDER_NAME)
 
     # administrator list
     ADMINS = ['testherokumail@gmail.com']

@@ -4,12 +4,20 @@ from api.resources.note import NoteResource, NotesListResource, NoteTagsResource
 from api.resources.user import UserResource, UsersListResource, UserFindOrResource
 from api.resources.auth import TokenResource
 from api.resources.tag import TagsResource, TagsListResource
+from config import Config
+from api import Message, mail
+from api.resources.file import UploadPictureResource
+from flask import send_from_directory
+
+
+@app.route('/uploads/<path:filename>')
+def download_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+
 
 api.add_resource(UsersListResource, '/users')  # GET, POST
 api.add_resource(UserResource, '/users/<int:user_id>')  # GET, PUT, DELETE
 api.add_resource(UserFindOrResource, '/users/or')  # GET Find user1 or user2
-
-api.add_resource(TokenResource, '/auth/token')  # GET
 
 api.add_resource(NotesListResource, '/notes')  # GET, POST
 api.add_resource(NoteResource, '/notes/<int:note_id>')  # GET, PUT, DELETE (delete = archive)
@@ -40,8 +48,7 @@ docs.register(NoteTexResource)
 docs.register(TagsResource)
 docs.register(TagsListResource)
 
-from config import Config
-from api import Message, mail
+docs.register(UploadPictureResource)
 
 msg = Message('test subject', sender=Config.ADMINS[0], recipients=Config.ADMINS)
 msg.body = 'text body'

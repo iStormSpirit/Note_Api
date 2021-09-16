@@ -9,7 +9,7 @@ from flask_httpauth import HTTPBasicAuth
 from flask_apispec.extension import FlaskApiSpec
 from flask_mail import Mail, Message
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=Config.UPLOAD_FOLDER)
 app.config.from_object(Config)
 
 api = Api(app)
