@@ -57,12 +57,18 @@ class NoteResource(MethodResource):
 @doc(tags=['Note'])
 class NotesListResource(MethodResource):
     @auth.login_required
-    @doc(summary="Get Note", description='Get all notes')
-    @marshal_with(NoteSchema(many=True))
-    @doc(security=[{"basicAuth": []}])
-    def get(self):
+    @doc(summary="Get notes list", security=[{"basicAuth": []}])
+    @marshal_with(NoteSchema(many=True), code=200)
+    @use_kwargs(NoteFilterSchema, location='query')
+    def get(self, **kwargs):
         author = g.user
         notes = NoteModel.get_all_for_user(author)
+        if kwargs.get('tag') is not None:
+            notes = notes.filter(NoteModel.tags.any(name=kwargs['tag']))
+        if kwargs.get('private') is not None:
+            notes = notes.filter_by(private=kwargs['private'])
+        if kwargs.get('username') is not None:
+            notes = notes.filter(NoteModel.author.has(username=kwargs['username']))
         return notes, 200
 
     @auth.login_required
@@ -140,24 +146,6 @@ class NoteTagsResource(MethodResource):
         return note, 200
 
 
-@doc(tags=['NotesFilter'])
-class NotesFilterResource(MethodResource):
-    @auth.login_required
-    @doc(summary="Get notes list", security=[{"basicAuth": []}])
-    @marshal_with(NoteSchema(many=True), code=200)
-    @use_kwargs(NoteFilterSchema, location='query')
-    def get(self, **kwargs):
-        author = g.user
-        notes = NoteModel.get_all_for_user(author)
-        if kwargs.get('tag') is not None:
-            notes = notes.filter(NoteModel.tags.any(name=kwargs.get('tag')))
-        if kwargs.get('private') is not None:
-            notes = notes.filter_by(private=kwargs.get('private'))
-        if kwargs.get('username') is not None:
-            notes = notes.filter(NoteModel.author.has(username=kwargs.get('username')))
-        return notes, 200
-
-
 # FIXME как вывести ошибку если ключ поиска в заметках не найден
 @doc(tags=['NotesFilter'])
 class NoteTexResource(MethodResource):
@@ -170,3 +158,5 @@ class NoteTexResource(MethodResource):
             notes = NoteModel.query.filter(NoteModel.text.like(f"%{text}%"))
             return notes, 200
         abort(404, error=f"Need key to search")
+
+# TODO поиск по списку тегов
