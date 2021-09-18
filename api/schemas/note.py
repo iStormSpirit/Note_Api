@@ -47,5 +47,6 @@ class NoteFilterSchema(ma.SQLAlchemySchema):
     username = ma.Str(required=False)
 
 
-# note_schema = NoteSchema()
-# notes_schema = NoteSchema(many=True)
+class NoteFilterTagsSchema(ma.SQLAlchemySchema):
+    private = ma.Boolean(required=False)
+    tags = ma.List(ma.String())

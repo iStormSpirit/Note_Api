@@ -1,6 +1,6 @@
 from api import api, app, docs
 from api.resources.note import NoteResource, NotesListResource, NoteTagsResource, \
-    NoteTexResource, NoteRestoreResource
+    NoteTexResource, NoteRestoreResource, NoteFilterTagsResource
 from api.resources.user import UserResource, UsersListResource, UserFindOrResource, UserFindLikeResource
 from api.resources.tag import TagsResource, TagsListResource
 from config import Config
@@ -23,6 +23,7 @@ docs.register(NotesListResource)
 docs.register(NoteRestoreResource)
 docs.register(NoteTagsResource)
 docs.register(NoteTexResource)
+docs.register(NoteFilterTagsResource)
 docs.register(TagsResource)
 docs.register(TagsListResource)
 docs.register(UploadPictureResource)
