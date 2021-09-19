@@ -129,24 +129,25 @@ class NoteTagsResource(MethodResource):
     # #  /home/boo/Projects/Flask2/NoteApi/note_venv/lib/python3.8/site-packages/apispec/ext/marshmallow/common.py:127:
     # #  UserWarning: Multiple schemas resolved to the name Generated. The name has been modified.
     # #  Either manually add each of the schemas with a different name or provide a custom schema_name_resolver. warnings.warn(
-    # @auth.login_required
-    # @doc(summary="Delete tags from Note", description='Delete tags to Note', security=[{"basicAuth": []}])
-    # @use_kwargs({"tags": fields.List(fields.Int())}, location='json')
-    # @marshal_with(NoteSchema)
-    # def delete(self, note_id, **kwargs):
-    #     author = g.user
-    #     note = NoteModel.query.get(note_id)
-    #     if note.author != author:
-    #         abort(403, error=f"Forbidden")
-    #     if not note:
-    #         abort(404, error=f"note {note_id} not found")
-    #     for tag_id in kwargs["tags"]:
-    #         tag = TagModel.query.get(tag_id)
-    #         if not note.tags:
-    #             abort(404, error=f"tag {tag_id} in note {note_id} not found")
-    #         note.tags.delete(tag)
-    #     note.save()
-    #     return note, 200
+    @auth.login_required
+    @doc(summary="Delete tags from Note", description='Delete tags to Note', security=[{"basicAuth": []}])
+    @use_kwargs({"tags": fields.List(fields.Int())}, location='json')
+    @marshal_with(NoteSchema)
+    def delete(self, note_id, **kwargs):
+        author = g.user
+        note = NoteModel.query.get(note_id)
+        if note.author != author:
+            abort(403, error=f"Forbidden")
+        if not note:
+            abort(404, error=gettext("Note with id %(note_id)s not found", note_id=note_id))
+        for tag_id in kwargs["tags"]:
+            if tag_id not in note.tags:
+                abort(404, error=gettext("Tag with id %(tag_id)s in note with id %(note_id)s not found",
+                                         tag_id=tag_id, note_id=note_id))
+            tag = TagModel.query.get(tag_id)
+            note.tags.remove(tag)
+        note.save()
+        return note, 200
 
 
 @doc(tags=['Note extra options'])

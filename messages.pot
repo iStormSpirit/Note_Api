@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-09-20 00:15+0300\n"
+"POT-Creation-Date: 2021-09-20 02:53+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Generated-By: Babel 2.9.1\n"
 
 #: api/resources/note.py:24 api/resources/note.py:34 api/resources/note.py:53
-#: api/resources/note.py:97 api/resources/note.py:119
+#: api/resources/note.py:97 api/resources/note.py:119 api/resources/note.py:142
 #, python-format
 msgid "Note with id %(note_id)s not found"
 msgstr ""
@@ -28,7 +28,12 @@ msgstr ""
 msgid "Tag with id %(tag_id)s not found"
 msgstr ""
 
-#: api/resources/note.py:164 api/resources/note.py:181 api/resources/user.py:85
+#: api/resources/note.py:145
+#, python-format
+msgid "Tag with id %(tag_id)s in note with id %(note_id)s not found"
+msgstr ""
+
+#: api/resources/note.py:165 api/resources/note.py:182 api/resources/user.py:85
 #: api/resources/user.py:98
 msgid "Need key to search"
 msgstr ""
