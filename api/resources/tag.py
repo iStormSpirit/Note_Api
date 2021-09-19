@@ -4,6 +4,7 @@ from api.schemas.tag import TagSchema
 from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
 from webargs import fields
+from flask_babel import gettext
 
 
 @doc(tags=['Tags'])
@@ -14,7 +15,7 @@ class TagsResource(MethodResource):
     def get(self, tag_id):
         tag = TagModel.query.get(tag_id)
         if not tag:
-            abort(404, error=f"Tag with id={tag_id} not found")
+            abort(404, error=gettext("Tag with id %(tag_id)s not found", tag_id=tag_id))
         return tag, 200
 
     @auth.login_required(role="admin")
@@ -24,7 +25,7 @@ class TagsResource(MethodResource):
     def put(self, tag_id, **kwargs):
         tag = TagModel.query.get(tag_id)
         if not tag:
-            abort(404, error=f"User with id={tag_id} not found")
+            abort(404, error=gettext("User with id %(tag_id)s not found", tag_id=tag_id))
         tag.name = kwargs["name"]
         tag.save()
         return tag, 200
@@ -37,7 +38,7 @@ class TagsResource(MethodResource):
         if tag:
             tag.delete()
             return tag, 200
-        abort(404, error=f"Tag with id={tag_id} not found")
+        abort(404, error=gettext("Tag with id %(tag_id)s not found", tag_id=tag_id))
 
 
 @doc(tags=['Tags'])
@@ -48,7 +49,7 @@ class TagsListResource(MethodResource):
     def get(self):
         tags = TagModel.query.all()
         if not tags:
-            abort(404, error=f"Tags not found")
+            abort(404, error=gettext("Tags not found"))
         return tags, 200
 
     @doc(summary="Create tags", description='Create tags')

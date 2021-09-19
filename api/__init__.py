@@ -31,7 +31,8 @@ logging.getLogger('werkzeug').setLevel(logging.INFO)
 
 @babel.localeselector
 def get_locale():
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
+    res = request.accept_languages.best_match(app.config['LANGUAGES'])
+    return res
 
 
 @auth.verify_password

@@ -6,6 +6,7 @@ from flask_apispec import marshal_with, use_kwargs, doc
 from webargs import fields
 import logging
 from api import api
+from flask_babel import gettext
 
 
 @doc(tags=['Users'])
@@ -16,7 +17,7 @@ class UserResource(MethodResource):
     def get(self, user_id):
         user = UserModel.query.get(user_id)
         if not user:
-            abort(404, error=f"User with id={user_id} not found")
+            abort(404, error=gettext("User with id %(user_id)s not found", user_id=user_id))
         return user, 200  # user_schema.dump(user) благодаря @marshal_with(UserSchema) теперь не нужен
 
     @auth.login_required(role="admin")
@@ -26,7 +27,7 @@ class UserResource(MethodResource):
     def put(self, user_id, **kwargs):
         user = UserModel.query.get(user_id)
         if not user:
-            abort(404, error=f"User with id={user_id} not found")
+            abort(404, error=gettext("User with id %(user_id)s not found", user_id=user_id))
         user.username = kwargs["username"]
         user.save()
         return user, 200
@@ -41,7 +42,7 @@ class UserResource(MethodResource):
         if user:
             user.remove()
             return user, 200
-        abort(404, error=f"Not Found user {user_id}")
+        abort(404, error=gettext("User with id %(user_id)s not found", user_id=user_id))
 
 
 @doc(tags=['Users'])
@@ -81,7 +82,7 @@ class UserFindOrResource(MethodResource):
         if "username" in kwargs:
             users = UserModel.query.filter(UserModel.username == kwargs["username"])
             return users, 200
-        abort(404, error="Not key for search")
+        abort(400, error=gettext("Need key to search"))
 
 
 @doc(tags=['Users extra options'])
@@ -94,4 +95,4 @@ class UserFindLikeResource(MethodResource):
         if username:
             users = UserModel.query.filter(UserModel.username.like(f"%{username}%"))
             return users, 200
-        abort(404, error=f"Need key to search")
+        abort(400, error=gettext("Need key to search"))

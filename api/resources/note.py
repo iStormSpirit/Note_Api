@@ -6,7 +6,7 @@ from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
 from webargs import fields
 from sqlalchemy.orm.exc import NoResultFound
-from flask_babel import _
+from flask_babel import gettext
 
 
 @doc(tags=['Note'])
@@ -21,7 +21,7 @@ class NoteResource(MethodResource):
             note = NoteModel.get_all_for_user(author).filter_by(id=note_id).one()
             return note, 200
         except NoResultFound:
-            abort(404, error=f"Note with id {note_id} not found")
+            abort(404, error=gettext("Note with id %(note_id)s not found", note_id=note_id))
 
     @auth.login_required
     @doc(summary="Edit Note by id", description='Edit note by id', security=[{"basicAuth": []}])
@@ -31,7 +31,7 @@ class NoteResource(MethodResource):
         author = g.user
         note = NoteModel.query.get(note_id)
         if not note:
-            abort(404, error=f"note {note_id} not found")
+            abort(404, error=gettext("Note with id %(note_id)s not found", note_id=note_id))
         if note.author != author:
             abort(403, error=f"Forbidden")
         if kwargs.get("text") is not None:
@@ -50,7 +50,7 @@ class NoteResource(MethodResource):
         if note.author != author:
             abort(403, error=f"Forbidden")
         if not note:
-            abort(404, error=f"Note with id:{note_id} not found")
+            abort(404, error=gettext("Note with id %(note_id)s not found", note_id=note_id))
         note.archivated()
         return note, 200
 
@@ -94,7 +94,7 @@ class NoteRestoreResource(MethodResource):
         author = g.user
         note = NoteModel.query.get(note_id)
         if not note:
-            abort(404, error=f"Not found note with id {note_id}")
+            abort(404, error=gettext("Note with id %(note_id)s not found", note_id=note_id))
         if not note.archive:
             return {}, 304
         if note.author != author:
@@ -116,11 +116,11 @@ class NoteTagsResource(MethodResource):
         if note.author != author:
             abort(403, error=f"Forbidden")
         if not note:
-            abort(404, error=f"note {note_id} not found")
+            abort(404, error=gettext("Note with id %(note_id)s not found", note_id=note_id))
         for tag_id in kwargs["tags"]:
             tag = TagModel.query.get(tag_id)
             if not tag:
-                abort(404, error=f"tag {tag_id} not found")
+                abort(404, error=gettext("Tag with id %(tag_id)s not found", tag_id=tag_id))
             note.tags.append(tag)
         note.save()
         return note, 200
@@ -161,7 +161,7 @@ class NoteTexResource(MethodResource):
         if text:
             notes = NoteModel.get_all_for_user(author).filter(NoteModel.text.like(f"%{text}%"))
             return notes, 200
-        abort(404, error=f"Need key to search")
+        abort(400, error=gettext("Need key to search"))
 
 
 @doc(tags=['Note extra options'])
@@ -178,4 +178,4 @@ class NoteFilterTagsResource(MethodResource):
         if kwargs.get("tags") is not None:
             notes = notes.filter(NoteModel.tags.any(TagModel.id.in_(kwargs['tags']))).all()
             return notes, 200
-        abort(400, error=f"Need key to search")
+        abort(400, error=gettext("Need key to search"))
