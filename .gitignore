@@ -1,9 +1,9 @@
 .idea/
 __pycache__/
-#upload/
+upload/
 tmp/
 *env/
 *.db
 *.pyc
 *.log
-#*.pot # обычно не комитятся
+*.pot # обычно не комитятся
