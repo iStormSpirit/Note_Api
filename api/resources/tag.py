@@ -10,7 +10,7 @@ from flask_babel import gettext
 @doc(tags=['Tags'])
 @api.resource('/tags/<int:tag_id>')
 class TagsResource(MethodResource):
-    @marshal_with(TagSchema)
+    @marshal_with(TagSchema, code=200)
     @doc(summary="Get tag by tag id", description='Get tags by tag id')
     def get(self, tag_id):
         tag = TagModel.query.get(tag_id)
@@ -20,7 +20,7 @@ class TagsResource(MethodResource):
 
     @auth.login_required(role="admin")
     @doc(summary="Edit tag by tag id", description='Edit tags by id', security=[{"basicAuth": []}])
-    @marshal_with(TagSchema)
+    @marshal_with(TagSchema, code=200)
     @use_kwargs({"name": fields.Str()})
     def put(self, tag_id, **kwargs):
         tag = TagModel.query.get(tag_id)
@@ -32,7 +32,7 @@ class TagsResource(MethodResource):
 
     @auth.login_required(role="admin")
     @doc(summary="Delete tag by tag id", description='Delete tag by id', security=[{"basicAuth": []}])
-    @marshal_with(TagSchema)
+    @marshal_with(TagSchema, code=200)
     def delete(self, tag_id):
         tag = TagModel.query.get(tag_id)
         if tag:
@@ -45,7 +45,7 @@ class TagsResource(MethodResource):
 @api.resource('/tags')
 class TagsListResource(MethodResource):
     @doc(summary="Get all tags", description='Get all tags')
-    @marshal_with(TagSchema(many=True))
+    @marshal_with(TagSchema(many=True), code=200)
     def get(self):
         tags = TagModel.query.all()
         if not tags:
@@ -54,7 +54,7 @@ class TagsListResource(MethodResource):
 
     @doc(summary="Create tags", description='Create tags')
     @use_kwargs({"name": fields.Str()})
-    @marshal_with(TagSchema)
+    @marshal_with(TagSchema, code=201)
     def post(self, **kwargs):
         tag = TagModel(**kwargs)
         tag.save()

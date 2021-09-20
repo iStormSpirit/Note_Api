@@ -14,7 +14,7 @@ from flask_babel import gettext
 @api.resource('/users/<int:user_id>')
 class UserResource(MethodResource):
     @doc(summary="Get User by id", description='Get user by id')
-    @marshal_with(UserSchema)
+    @marshal_with(UserSchema, code=200)
     def get(self, user_id):
         user = UserModel.query.get(user_id)
         if not user:
@@ -23,7 +23,7 @@ class UserResource(MethodResource):
 
     @auth.login_required
     @doc(summary="Edit User by id", description='Edit user by id', security=[{"basicAuth": []}])
-    @marshal_with(UserSchema)
+    @marshal_with(UserSchema, code=200)
     @use_kwargs(UserEditSchema, location='json')
     def put(self, user_id, **kwargs):
         author = g.user
@@ -41,11 +41,11 @@ class UserResource(MethodResource):
     @doc(summary="Delete User by id", description='Delete user by id.')
     @doc(responses={401: {"description": "Not authorization"}})
     @doc(responses={404: {"description": "Not found"}})
-    @marshal_with(UserSchema)
+    @marshal_with(UserSchema, code=200)
     def delete(self, user_id):
         user = UserModel.query.get(user_id)
         if user:
-            user.remove()
+            user.delete()
             return user, 200
         abort(404, error=gettext("User with id %(user_id)s not found", user_id=user_id))
 
@@ -54,14 +54,14 @@ class UserResource(MethodResource):
 @api.resource('/users')
 class UsersListResource(MethodResource):
     @doc(summary="Get Users", description='Get users')
-    @marshal_with(UserSchema(many=True))
+    @marshal_with(UserSchema(many=True), code=200)
     def get(self):
         users = UserModel.query.all()
         return users, 200
 
     @doc(summary="Create Users", description='Create users')
     @use_kwargs(UserCreateSchema, location='json')
-    @marshal_with(UserSchema)
+    @marshal_with(UserSchema, code=201)
     def post(self, **kwargs):
         if kwargs.get("photo_id"):
             photo_id = kwargs["photo_id"]
@@ -88,7 +88,7 @@ class UsersListResource(MethodResource):
 class UserFindOrResource(MethodResource):
     @doc(summary="Find any of user by name", description='Find any of user by name')
     @use_kwargs({"username": fields.Str(), "username2": fields.Str()}, location='query')
-    @marshal_with(UserSchema(many=True))
+    @marshal_with(UserSchema(many=True), code=200)
     def get(self, **kwargs):
         if "username" and "username2" in kwargs:
             users = UserModel.query.filter(
@@ -106,7 +106,7 @@ class UserFindOrResource(MethodResource):
 class UserFindLikeResource(MethodResource):
     @doc(summary="Find users like ", description='Find users like')
     @use_kwargs({"username": fields.String(load_default="")}, location='query')
-    @marshal_with(UserSchema(many=True))
+    @marshal_with(UserSchema(many=True), code=200)
     def get(self, username):
         if username:
             users = UserModel.query.filter(UserModel.username.like(f"%{username}%"))
@@ -119,7 +119,7 @@ class UserFindLikeResource(MethodResource):
 class UserAddPhotoResource(MethodResource):
     @auth.login_required
     @doc(summary="Add photo to user", description='Add photo to user', security=[{"basicAuth": []}])
-    @marshal_with(UserSchema)
+    @marshal_with(UserSchema, code=200)
     @use_kwargs(UserPhotoSchema, location='json')
     def put(self, user_id, photo_id):
         author = g.user

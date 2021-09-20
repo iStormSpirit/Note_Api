@@ -14,7 +14,7 @@ from flask_babel import gettext
 class NoteResource(MethodResource):
     @auth.login_required
     @doc(summary="Get Note by id", description='Get note by id', security=[{"basicAuth": []}])
-    @marshal_with(NoteSchema)
+    @marshal_with(NoteSchema, code=200)
     def get(self, note_id):
         author = g.user
         try:
@@ -25,7 +25,7 @@ class NoteResource(MethodResource):
 
     @auth.login_required
     @doc(summary="Edit Note by id", description='Edit note by id', security=[{"basicAuth": []}])
-    @marshal_with(NoteSchema)
+    @marshal_with(NoteSchema, code=200)
     @use_kwargs(NoteEditSchema, location='json')
     def put(self, note_id, **kwargs):
         author = g.user
@@ -43,7 +43,7 @@ class NoteResource(MethodResource):
 
     @auth.login_required
     @doc(summary="Move Note by id to archive", description='Move Note by id to archive', security=[{"basicAuth": []}])
-    @marshal_with(NoteSchema)
+    @marshal_with(NoteSchema, code=200)
     def delete(self, note_id):
         author = g.user
         note = NoteModel.query.get(note_id)
@@ -75,7 +75,7 @@ class NotesListResource(MethodResource):
 
     @auth.login_required
     @doc(summary="Post Note", description='Create note', security=[{"basicAuth": []}])
-    @marshal_with(NoteSchema)
+    @marshal_with(NoteSchema, code=201)
     @use_kwargs(NoteCreateSchema)
     def post(self, **kwargs):
         author = g.user
@@ -89,7 +89,7 @@ class NotesListResource(MethodResource):
 class NoteRestoreResource(MethodResource):
     @auth.login_required
     @doc(summary="back notes from archive", description='back notes from archive', security=[{"basicAuth": []}])
-    @marshal_with(NoteSchema)
+    @marshal_with(NoteSchema, code=200)
     def put(self, note_id):
         author = g.user
         note = NoteModel.query.get(note_id)
@@ -109,7 +109,7 @@ class NoteTagsResource(MethodResource):
     @auth.login_required
     @doc(summary="Add tags to Note", description='Add tags to Note', security=[{"basicAuth": []}])
     @use_kwargs({"tags": fields.List(fields.Int())}, location='query')
-    @marshal_with(NoteSchema)
+    @marshal_with(NoteSchema, code=200)
     def put(self, note_id, **kwargs):
         author = g.user
         note = NoteModel.query.get(note_id)
@@ -128,7 +128,7 @@ class NoteTagsResource(MethodResource):
     @auth.login_required
     @doc(summary="Delete tags from Note", description='Delete tags to Note', security=[{"basicAuth": []}])
     @use_kwargs({"tags": fields.List(fields.Int())}, location='query')
-    @marshal_with(NoteSchema)
+    @marshal_with(NoteSchema, code=200)
     def delete(self, note_id, **kwargs):
         author = g.user
         note = NoteModel.query.get(note_id)
@@ -151,7 +151,7 @@ class NoteTexResource(MethodResource):
     @auth.login_required
     @doc(summary="Find notes with text", description='Find notes with text', security=[{"basicAuth": []}])
     @use_kwargs({"text": fields.String(load_default="")}, location='query')
-    @marshal_with(NoteSchema(many=True))
+    @marshal_with(NoteSchema(many=True), code=200)
     def get(self, text):
         author = g.user
         if text:
@@ -166,7 +166,7 @@ class NoteFilterTagsResource(MethodResource):
     @auth.login_required
     @doc(summary="Get user's notes by list tag's id",
          description="Get user's notes by list tag's id", security=[{"basicAuth": []}])
-    @marshal_with(NoteSchema(many=True))
+    @marshal_with(NoteSchema(many=True), code=200)
     @use_kwargs(NoteFilterTagsSchema, location='query')
     def get(self, **kwargs):
         author = g.user

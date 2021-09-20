@@ -48,7 +48,7 @@ class UserModel(db.Model):
             print(f"User with username={self.username} already exist")
             db.session.rollback()
 
-    def remove(self):
+    def delete(self):
         db.session.delete(self)
         db.session.commit()
 
