@@ -1,6 +1,6 @@
-from api import abort, auth
+from api import abort, auth, g
 from api.models.user import UserModel
-from api.schemas.user import UserSchema, UserCreateSchema
+from api.schemas.user import UserSchema, UserCreateSchema, UserEditSchema
 from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
 from webargs import fields
@@ -21,15 +21,18 @@ class UserResource(MethodResource):
             abort(404, error=gettext("User with id %(user_id)s not found", user_id=user_id))
         return user, 200  # user_schema.dump(user) благодаря @marshal_with(UserSchema) теперь не нужен
 
-    @auth.login_required(role="admin")
+# FIXME пофиксить что бы картинку к профилю мог добавлять только залогиненый пользователь только себе
+    @auth.login_required
     @doc(summary="Edit User by id", description='Edit user by id', security=[{"basicAuth": []}])
     @marshal_with(UserSchema)
-    @use_kwargs({"username": fields.Str()})
-    def put(self, user_id, **kwargs):
+    @use_kwargs(UserEditSchema, location='json')
+    def put(self, user_id, photo_id, **kwargs):
         user = UserModel.query.get(user_id)
         if not user:
             abort(404, error=gettext("User with id %(user_id)s not found", user_id=user_id))
-        user.username = kwargs["username"]
+        if kwargs.get("username") is not None:
+            user.username = kwargs["username"]
+        user.photo_id = photo_id
         user.save()
         return user, 200
 

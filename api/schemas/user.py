@@ -35,3 +35,11 @@ class UserCreateSchema(ma.SQLAlchemySchema):
     password = ma.Str()
     photo_id = ma.Integer(required=False)
     # photo_url = ma.Str(required=False)
+
+
+class UserEditSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = UserModel
+
+    username = ma.Str(required=False)
+    photo_id = ma.Integer(required=False)
