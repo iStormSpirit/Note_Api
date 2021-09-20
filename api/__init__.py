@@ -3,6 +3,7 @@ from config import Config
 from flask import Flask, g, request
 from flask_restful import Api, Resource, abort, reqparse
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import MetaData
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 from flask_httpauth import HTTPBasicAuth
@@ -10,18 +11,34 @@ from flask_apispec.extension import FlaskApiSpec
 from flask_mail import Mail, Message
 from flask_babel import Babel
 
+# Это из документации: https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/#using-custom-metadata-and-naming-conventions
+convention = {
+    "ix": 'ix_%(column_0_label)s',
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s"
+}
+
+metadata = MetaData(naming_convention=convention)
+
 app = Flask(__name__, static_folder=Config.UPLOAD_FOLDER)
 app.config.from_object(Config)
 
 api = Api(app)
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+db = SQLAlchemy(app, metadata=metadata)
+
+# Про render_as_batch тут: https://alembic.sqlalchemy.org/en/latest/batch.html
+# Суть кратко: База данных SQLite представляет собой проблему для инструментов миграции,
+# поскольку она почти не поддерживает оператор ALTER
+# Команда ALTER TABLE используется для добавления, удаления или модификации колонки в уже существующей таблице
+migrate = Migrate(app, db, render_as_batch=True)
 ma = Marshmallow(app)
 auth = HTTPBasicAuth()
-docs = FlaskApiSpec(app)
 mail = Mail(app)
 babel = Babel(app)
 
+docs = FlaskApiSpec(app)
 logging.basicConfig(filename='record.log',
                     level=logging.INFO,
                     format=f'%(asctime)s %(levelname)s %(name)s : %(message)s')

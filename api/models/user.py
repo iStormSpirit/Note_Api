@@ -4,6 +4,7 @@ from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import expression
+from api.models.file import FileModel
 
 
 class UserModel(db.Model):
@@ -13,10 +14,18 @@ class UserModel(db.Model):
     notes = db.relationship('NoteModel', backref='author', lazy='dynamic')
     is_staff = db.Column(db.Boolean(), default=False, server_default=expression.true(), nullable=False)
     role = db.Column(db.String(32), default=False, server_default=expression.true(), nullable=False)
+    photo_id = db.Column(db.Integer, db.ForeignKey("file_model.id"), nullable=True)
+    photo = db.relationship(FileModel, backref="user", lazy='joined')
+    # photo_url = db.Column(db.String(128))
 
-    def __init__(self, username, password):
-        self.username = username
+    def __init__(self, **kwargs):
+        password = kwargs["password"]
+        del kwargs["password"]
+        super().__init__(**kwargs)
         self.hash_password(password)
+    # def __init__(self, username, password):
+    #     self.username = username
+    #     self.hash_password(password)
 
     def hash_password(self, password):
         self.password_hash = pwd_context.encrypt(password)

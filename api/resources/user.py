@@ -1,11 +1,12 @@
 from api import abort, auth
 from api.models.user import UserModel
-from api.schemas.user import UserSchema, UserRequestSchema
+from api.schemas.user import UserSchema, UserCreateSchema
 from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
 from webargs import fields
 import logging
 from api import api
+from api.models.file import FileModel
 from flask_babel import gettext
 
 
@@ -55,15 +56,27 @@ class UsersListResource(MethodResource):
         return users, 200
 
     @doc(summary="Create Users", description='Create users')
-    @use_kwargs(UserRequestSchema, location='json')
+    @use_kwargs(UserCreateSchema, location='json')
     @marshal_with(UserSchema)
     def post(self, **kwargs):
+        if kwargs.get("photo_id"):
+            photo_id = kwargs["photo_id"]
+            del kwargs["photo_id"]
+            photo = FileModel.query.get(photo_id)
+            kwargs["photo"] = photo
         user = UserModel(**kwargs)
         user.save()
         if not user.id:
             abort(400, error=f"User with username:{user.username} already exist")
         logging.info("User create!!!")
         return user, 201
+    # def post(self, **kwargs):
+    #     user = UserModel(**kwargs)
+    #     user.save()
+    #     if not user.id:
+    #         abort(400, error=f"User with username:{user.username} already exist")
+    #     logging.info("User create!!!")
+    #     return user, 201
 
 
 # FIXME добавить найти только user2
