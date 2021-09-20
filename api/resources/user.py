@@ -1,6 +1,6 @@
 from api import abort, auth, g
 from api.models.user import UserModel
-from api.schemas.user import UserSchema, UserCreateSchema, UserEditSchema
+from api.schemas.user import UserSchema, UserCreateSchema, UserEditSchema, UserPhotoSchema
 from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
 from webargs import fields
@@ -21,18 +21,19 @@ class UserResource(MethodResource):
             abort(404, error=gettext("User with id %(user_id)s not found", user_id=user_id))
         return user, 200  # user_schema.dump(user) благодаря @marshal_with(UserSchema) теперь не нужен
 
-# FIXME пофиксить что бы картинку к профилю мог добавлять только залогиненый пользователь только себе
     @auth.login_required
     @doc(summary="Edit User by id", description='Edit user by id', security=[{"basicAuth": []}])
     @marshal_with(UserSchema)
     @use_kwargs(UserEditSchema, location='json')
-    def put(self, user_id, photo_id, **kwargs):
+    def put(self, user_id, **kwargs):
+        author = g.user
         user = UserModel.query.get(user_id)
+        if user != author:
+            abort(403, error=f"Forbidden")
         if not user:
             abort(404, error=gettext("User with id %(user_id)s not found", user_id=user_id))
         if kwargs.get("username") is not None:
             user.username = kwargs["username"]
-        user.photo_id = photo_id
         user.save()
         return user, 200
 
@@ -82,7 +83,6 @@ class UsersListResource(MethodResource):
     #     return user, 201
 
 
-# FIXME добавить найти только user2
 @doc(tags=['Users extra options'])
 @api.resource('/users/any')
 class UserFindOrResource(MethodResource):
@@ -112,3 +112,21 @@ class UserFindLikeResource(MethodResource):
             users = UserModel.query.filter(UserModel.username.like(f"%{username}%"))
             return users, 200
         abort(400, error=gettext("Need key to search"))
+
+
+@doc(tags=['Users extra options'])
+@api.resource('/users/<int:user_id>/photo')
+class UserAddPhotoResource(MethodResource):
+    @auth.login_required
+    @doc(summary="Add photo to user", description='Add photo to user', security=[{"basicAuth": []}])
+    @marshal_with(UserSchema)
+    @use_kwargs(UserPhotoSchema, location='json')
+    def put(self, user_id, photo_id):
+        author = g.user
+        user = UserModel.query.get(user_id)
+        if user != author:
+            abort(403, error=f"Forbidden")
+        if photo_id is not None:
+            user.photo_id = photo_id
+        user.save()
+        return user, 200

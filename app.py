@@ -1,7 +1,7 @@
 from api import api, app, docs
 from api.resources.note import NoteResource, NotesListResource, NoteTagsResource, \
     NoteTexResource, NoteRestoreResource, NoteFilterTagsResource
-from api.resources.user import UserResource, UsersListResource, UserFindOrResource, UserFindLikeResource
+from api.resources.user import UserResource, UsersListResource, UserFindOrResource, UserFindLikeResource, UserAddPhotoResource
 from api.resources.tag import TagsResource, TagsListResource
 from config import Config
 from api import Message, mail
@@ -16,6 +16,7 @@ def download_file(filename):
 
 docs.register(UserResource)
 docs.register(UsersListResource)
+docs.register(UserAddPhotoResource)
 docs.register(UserFindOrResource)
 docs.register(UserFindLikeResource)
 docs.register(NoteResource)

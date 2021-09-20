@@ -38,8 +38,15 @@ class UserCreateSchema(ma.SQLAlchemySchema):
 
 
 class UserEditSchema(ma.SQLAlchemySchema):
-    class Meta:
-        model = UserModel
+    # class Meta:
+    #     model = UserModel
 
-    username = ma.Str(required=False)
-    photo_id = ma.Integer(required=False)
+    username = ma.String()
+    # photo_id = ma.Integer(required=False)
+
+
+class UserPhotoSchema(ma.SQLAlchemySchema):
+    # class Meta:
+    #     model = UserModel
+
+    photo_id = ma.Integer()
