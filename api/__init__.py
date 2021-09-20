@@ -11,7 +11,8 @@ from flask_apispec.extension import FlaskApiSpec
 from flask_mail import Mail, Message
 from flask_babel import Babel
 
-# Это из документации: https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/#using-custom-metadata-and-naming-conventions
+# Это из документации:
+# https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/#using-custom-metadata-and-naming-conventions
 convention = {
     "ix": 'ix_%(column_0_label)s',
     "uq": "uq_%(table_name)s_%(column_0_name)s",

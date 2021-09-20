@@ -1,12 +1,18 @@
-from api import api, app, docs
+from api import app, docs
 from api.resources.note import NoteResource, NotesListResource, NoteTagsResource, \
     NoteTexResource, NoteRestoreResource, NoteFilterTagsResource
-from api.resources.user import UserResource, UsersListResource, UserFindOrResource, UserFindLikeResource, UserAddPhotoResource
+from api.resources.user import UserResource, UsersListResource, UserFindOrResource, \
+    UserFindLikeResource, UserAddPhotoResource
 from api.resources.tag import TagsResource, TagsListResource
 from config import Config
 from api import Message, mail
 from api.resources.file import UploadPictureResource
-from flask import send_from_directory
+from flask import send_from_directory, render_template
+
+
+@app.route('/')
+def main_page():
+    return render_template('index.html')
 
 
 @app.route('/uploads/<path:filename>')

@@ -4,7 +4,6 @@ from app import app
 from unittest import TestCase
 from api.models.user import UserModel
 from api.models.note import NoteModel
-from api.schemas.user import UserSchema
 from base64 import b64encode
 from config import Config
 
@@ -198,8 +197,6 @@ class TestNotes(TestCase):
         Получение заметки с несуществующим id
         """
         pass
-
-
 
     def test_private_public_notes(self):
         """

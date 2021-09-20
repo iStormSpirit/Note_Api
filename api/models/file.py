@@ -1,5 +1,4 @@
 from api import db
-from sqlalchemy.sql import expression
 
 
 class FileModel(db.Model):
