@@ -1,5 +1,6 @@
 ## О проекте
 Проект NoteApi -  api серивис заметок созданный на flask используя restfull подход.
+Рабочий пример проекта на [heroku через swagger](https://noteapigeorge.herokuapp.com/swagger-ui/#/)
 
 В проекте реализованы:
 ```
