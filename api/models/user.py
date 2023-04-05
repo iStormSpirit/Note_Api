@@ -1,9 +1,10 @@
-from api import db, Config, ma
+from itsdangerous import BadSignature, SignatureExpired
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from passlib.apps import custom_app_context as pwd_context
-from itsdangerous import (TimedJSONWebSignatureSerializer
-                          as Serializer, BadSignature, SignatureExpired)
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import expression
+
+from api import Config, db, ma
 from api.models.file import FileModel
 
 

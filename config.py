@@ -1,8 +1,8 @@
 import os
+
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 
-# pathlib - рекомендация для работы спутями
 base_dir = os.path.dirname(os.path.abspath(__file__))
 
 security_definitions = {

@@ -1,7 +1,6 @@
 from api import ma
 from api.models.tag import TagModel
 
-
 #       schema        flask-restful
 # object ------>  dict ----------> json
 

@@ -1,13 +1,15 @@
-from api import abort, auth, g
-from api.models.user import UserModel
-from api.schemas.user import UserSchema, UserCreateSchema, UserEditSchema, UserPhotoSchema
-from flask_apispec.views import MethodResource
-from flask_apispec import marshal_with, use_kwargs, doc
-from webargs import fields
 import logging
-from api import api
-from api.models.file import FileModel
+
+from flask_apispec import doc, marshal_with, use_kwargs
+from flask_apispec.views import MethodResource
 from flask_babel import gettext
+from webargs import fields
+
+from api import abort, api, auth, g
+from api.models.file import FileModel
+from api.models.user import UserModel
+from api.schemas.user import (UserCreateSchema, UserEditSchema,
+                              UserPhotoSchema, UserSchema)
 
 
 @doc(tags=['Users'])

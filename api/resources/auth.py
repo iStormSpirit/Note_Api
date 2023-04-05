@@ -1,5 +1,4 @@
-from api import Resource, g, auth
-from api import api
+from api import Resource, api, auth, g
 
 
 @api.resource('/auth/token')

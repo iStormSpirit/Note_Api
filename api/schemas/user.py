@@ -2,7 +2,6 @@ from api import ma
 from api.models.user import UserModel
 from api.schemas.file import FileSchema
 
-
 #       schema        flask-restful
 # object ------>  dict ----------> json
 

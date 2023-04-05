@@ -1,11 +1,13 @@
 import os
-from config import Config, ma_plugin
+
+from flask_apispec import doc, marshal_with, use_kwargs
 from flask_apispec.views import MethodResource
-from flask_apispec import marshal_with, doc, use_kwargs
 from marshmallow import fields
+
 from api import api
 from api.models.file import FileModel
 from api.schemas.file import FileSchema
+from config import Config, ma_plugin
 
 
 @ma_plugin.map_to_openapi_type('file', None)

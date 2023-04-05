@@ -1,10 +1,11 @@
-from api import auth, abort, api
+from flask_apispec import doc, marshal_with, use_kwargs
+from flask_apispec.views import MethodResource
+from flask_babel import gettext
+from webargs import fields
+
+from api import abort, api, auth
 from api.models.tag import TagModel
 from api.schemas.tag import TagSchema
-from flask_apispec.views import MethodResource
-from flask_apispec import marshal_with, use_kwargs, doc
-from webargs import fields
-from flask_babel import gettext
 
 
 @doc(tags=['Tags'])

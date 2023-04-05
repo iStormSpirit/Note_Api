@@ -1,12 +1,15 @@
-from api import auth, abort, g, api
+from flask_apispec import doc, marshal_with, use_kwargs
+from flask_apispec.views import MethodResource
+from flask_babel import gettext
+from sqlalchemy.orm.exc import NoResultFound
+from webargs import fields
+
+from api import abort, api, auth, g
 from api.models.note import NoteModel
 from api.models.tag import TagModel
-from api.schemas.note import NoteSchema, NoteEditSchema, NoteCreateSchema, NoteFilterSchema, NoteFilterTagsSchema
-from flask_apispec.views import MethodResource
-from flask_apispec import marshal_with, use_kwargs, doc
-from webargs import fields
-from sqlalchemy.orm.exc import NoResultFound
-from flask_babel import gettext
+from api.schemas.note import (NoteCreateSchema, NoteEditSchema,
+                              NoteFilterSchema, NoteFilterTagsSchema,
+                              NoteSchema)
 
 
 @doc(tags=['Note'])

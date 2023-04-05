@@ -1,10 +1,11 @@
 import json
-from api import db
-from app import app
-from unittest import TestCase
-from api.models.user import UserModel
-from api.models.note import NoteModel
 from base64 import b64encode
+from unittest import TestCase
+
+from api import db
+from api.models.note import NoteModel
+from api.models.user import UserModel
+from app import app
 from config import Config
 
 

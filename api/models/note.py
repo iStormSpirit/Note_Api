@@ -1,7 +1,8 @@
-from api import db
-from api.models.user import UserModel
-from api.models.tag import TagModel
 from sqlalchemy.sql import expression
+
+from api import db
+from api.models.tag import TagModel
+from api.models.user import UserModel
 
 tags = db.Table('tags',
                 db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),

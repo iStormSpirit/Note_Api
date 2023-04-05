@@ -1,8 +1,7 @@
 from api import ma
 from api.models.note import NoteModel
-from api.schemas.user import UserSchema
 from api.schemas.tag import TagSchema
-
+from api.schemas.user import UserSchema
 
 #       schema        flask-restful
 # object ------>  dict ----------> json

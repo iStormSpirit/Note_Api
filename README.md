@@ -1,8 +1,6 @@
 ## О проекте
-Проект NoteApi -  api серивис заметок созданный на flask используя restfull подход.
-Рабочий пример проекта на 
-* v2 [heroku через swagger](https://noteapigeorge.herokuapp.com/swagger-ui/#/)
-* v3 [heroku через swagger](https://noteapilatest.herokuapp.com/swagger-ui/)
+Проект NoteApi -  api серивис заметок созданный на flask используя restfull подход.<br>
+Документация доступна в swagger локально по ссылке [http://127.0.0.1:5000/swagger-ui/](http://127.0.0.1:5000/swagger-ui/)
 
 В проекте реализованы:
 ```
@@ -29,6 +27,7 @@ python3 -m venv note_venv
 source note_venv/bin/activate
 pip install -r requirements.txt
 flask db upgrade
+python app.py
 ```
 ## Migration
 ```

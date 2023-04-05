@@ -1,15 +1,17 @@
 import logging
-from config import Config
+
 from flask import Flask, g, request
+from flask_apispec.extension import FlaskApiSpec
+from flask_babel import Babel
+from flask_httpauth import HTTPBasicAuth
+from flask_mail import Mail, Message
+from flask_marshmallow import Marshmallow
+from flask_migrate import Migrate
 from flask_restful import Api, Resource, abort, reqparse
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
-from flask_migrate import Migrate
-from flask_marshmallow import Marshmallow
-from flask_httpauth import HTTPBasicAuth
-from flask_apispec.extension import FlaskApiSpec
-from flask_mail import Mail, Message
-from flask_babel import Babel
+
+from config import Config
 
 # Это из документации:
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/#using-custom-metadata-and-naming-conventions
@@ -56,6 +58,7 @@ def get_locale():
 @auth.verify_password
 def verify_password(username_or_token, password):
     from api.models.user import UserModel
+
     # сначала проверяем authentication token
     # print("username_or_token = ", username_or_token)
     # print("password = ", password)

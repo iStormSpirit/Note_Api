@@ -1,5 +1,6 @@
-from api import db
 from sqlalchemy.exc import IntegrityError
+
+from api import db
 
 
 class TagModel(db.Model):
